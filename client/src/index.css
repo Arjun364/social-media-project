@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  @apply m-0 p-0 box-border font-poppins ;
+  @apply m-0 p-0 box-border font-poppins scroll-smooth ;
 }
 
 /* body{
@@ -14,12 +14,15 @@
 
 /* Typography */
 
-.heading-xl{
-  @apply text-[70px] font-poppins  font-bold;
+h1{
+  @apply text-[50px] lg:text-[60px] font-poppins  font-bold;
+}
+h2{
+  @apply text-[30px] md:text-[40px] lg:text-[50px] font-poppins  font-bold;
 }
 
-.heading-l{
-  @apply text-[50px] font-poppins  font-bold;
+h5{
+  @apply  text-[20px] lg:text-[25px] font-poppins font-bold;
 }
 
 .heading-m{
@@ -35,12 +38,18 @@
   @apply text-[18px] font-poppins ;
 }
 
-/* btn class */
-.btn{
-  @apply w-full h-[3rem] bg-blue-600 border-2 border-solid border-black text-white font-bold rounded-md;
-}
 
 /* txt box */
 .txtbox{
   @apply border-2 border-solid border-black;
+}
+
+/* logo design */
+.logo{
+  @apply text-[35px] ;
+}
+
+/* btn */
+.btn{
+  @apply rounded-full text-white bg-blue-800 px-[1.5rem] h-[3rem] hover:bg-blue-900 focus:bg-blue-900 ;
 }

@@ -1,16 +1,17 @@
 import React from 'react'
-import DarkModeSwitcher from '../components/DarkModeSwitcher'
 import { motion } from "framer-motion"
+import HeroPage from "../components/Landingpage/HeroPage"
+import FeatureSection from '../components/Landingpage/FeatureSection'
+import CTA from '../components/Landingpage/CTA'
+import FooterSection from '../components/Landingpage/FooterSection'
 
 const LandingPage = () => {
   return (
-    <div className='w-full h-[100vh] dark:bg-black dark:text-white flex items-center justify-center' >
-      <motion.h1
-        whileHover={{ scale: 1.2 }}
-        className="heading-l flex gap-4 items-center">
-        LandingPage
-        <DarkModeSwitcher />
-      </motion.h1>
+    <div className='w-full min-h-[100vh] flex flex-col items-center ' >
+      <HeroPage/>
+      <FeatureSection/>
+      <CTA/>
+      <FooterSection/>
     </div>
   )
 }
