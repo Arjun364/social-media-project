@@ -20,7 +20,7 @@ export default {
     'lg': '1024px',
     // => @media (min-width: 1024px) { ... }
 
-    'lx': '1280px',
+    'xl': '1280px',
     // => @media (min-width: 1280px) { ... }
   },
   // theme section

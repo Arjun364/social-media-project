@@ -38,10 +38,15 @@ h5{
   @apply text-[18px] font-poppins ;
 }
 
+/* error msg */
+
+.errMsg {
+  @apply text-sm text-red-500;
+}
 
 /* txt box */
 .txtbox{
-  @apply border-2 border-solid border-black;
+  @apply w-full px-[1rem] h-[2.5rem] md:h-[3rem] rounded-md border-0 md:border-[3px] border-solid border-black;
 }
 
 /* logo design */
@@ -52,4 +57,8 @@ h5{
 /* btn */
 .btn{
   @apply rounded-full text-white bg-blue-800 px-[1.5rem] h-[3rem] hover:bg-blue-900 focus:bg-blue-900 ;
+}
+
+.btn1{
+  @apply w-full md:min-w-[20rem] h-[3rem] bg-blue-700 text-white rounded-md hover:bg-blue-800 focus:bg-blue-800;
 }

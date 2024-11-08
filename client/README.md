@@ -26,6 +26,7 @@ it is basic structure with tailwind and react icons [more things will be added l
  -- sweet alert 2 (alert libary) :+ npm i sweetalert2 
  -- formik [form authientication ] :+  npm i formik
  -- Framer Motion [for advanced animations] :+ npm i framer-motion
+ -- react-toastify [for attractive notifications] :+ npm i react-toastify
 
  -----------------------------------------------------------------------------------------------------------------------------------------
 

@@ -16,9 +16,9 @@ const Authentication = ({signin}) => {
   const navigate = useNavigate()
   
   return (
-    <div className='w-full h-[100vh] flex items-center justify-between '>
-      <div className='w-[50%] h-full p-[2rem] overflow-hidden relative'>
-      <span className='text-white font-bold text-[1.3rem] z-50 flex items-center gap-1' onClick={()=>navigate(-1)}><IoIosArrowBack className='text-[1.5rem]'/> Back</span>
+    <div className='w-full h-[100vh] flex flex-col md:flex-row items-center justify-between relative'>
+      <div className='flex-1 w-full h-full p-[2rem] overflow-hidden relative'>
+      <span className=' text-white font-bold text-[1.3rem] z-50 hidden md:flex items-center gap-1 cursor-pointer' onClick={()=>navigate(-1)}><IoIosArrowBack className='text-[1.5rem]'/> Back</span>
       {signin?
       <video src={loginbg} className='absolute inset-0 object-cover w-full h-full top-0 left-0 -z-50'  muted autoPlay loop ></video>
       :
