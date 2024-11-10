@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
 import DarkModeSwitcher from '../components/DarkModeSwitcher'
 import { motion } from "framer-motion"
+import NavigatioinBar from '../components/NavigatioinBar'
+import Sidebar from '../components/Sidebar'
+import MobNav from '../components/MobNav'
+
 
 
 
 const HomePage = () => {
     return (
-        <div className='w-full h-[100vh] dark:bg-black dark:text-white flex flex-col items-center justify-center' >
-            <motion.h1
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.8 }}
-                initial={{ x: 0 }}
-                className="heading-l flex gap-4 items-center">
-                HomePage
-                <DarkModeSwitcher />
-            </motion.h1>
+        <div className='w-full h-[100vh] dark:bg-black dark:text-white flex flex-col items-center' >
+            <MobNav />
+            <NavigatioinBar />
+            <div className='w-full h-[88vh] flex'>
+            <Sidebar/>
+            </div>
         </div>
     )
 }
