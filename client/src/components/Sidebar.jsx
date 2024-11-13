@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from 'framer-motion';
 // flowbite
 import { Dropdown, Flowbite } from "flowbite-react";
@@ -10,22 +11,29 @@ import AddCommunities from './AddCommunities';
 
 
 
-const Sidebar = () => {
+
+const Sidebar = ({isSection}) => {
     const [isRecentDropped, setIsRecentDropped] = useState(true)
     const [isCommunityDropped, setIsCommunityDropped] = useState(true)
+
+    const navigate = useNavigate()
+    const handleNavigation =(navigateto)=>{
+        isSection(navigateto)
+        navigate(`/${navigateto}`)
+    }
 
     return (
         <div className='hidden md:block w-[20rem] h-full p-[1.5rem] border-r-2 border-solid overflow-x-hidden overflow-y-scroll noscroll'>
             {/* main sidebar */}
             <div className='flex flex-col gap-1 border-b border-solid pb-5'>
                 {/* home section */}
-                <motion.button className='w-full flex items-center gap-3 font-medium px-2 py-2 hover:bg-slate-200 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150'>
+                <motion.button className='w-full flex items-center gap-3 font-medium px-2 py-2 hover:bg-slate-200 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150' onClick={()=>handleNavigation('home')}>
                     <AiOutlineHome className='text-[1.5rem]' />
                     Home
                 </motion.button>
                 {/* expolre section */}
-                <motion.button className='w-full flex items-center gap-3 font-medium px-2 py-2 hover:bg-slate-200 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150'>
-                    <MdOutlineExplore className='text-[1.5rem]' />
+                <motion.button className='w-full flex items-center gap-3 font-medium px-2 py-2 hover:bg-slate-200 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150' onClick={()=>handleNavigation('explore')}>
+                    <MdOutlineExplore className='text-[1.5rem]'  />
                     Explore
                 </motion.button>
             </div>
