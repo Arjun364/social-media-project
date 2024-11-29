@@ -5,6 +5,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [userToken,setUserToken] = useState(null)
     const [loading, setLoading] = useState(true); // loading state
 
     useEffect(() => {
@@ -23,14 +24,18 @@ export const AuthProvider = ({ children }) => {
         console.log(`Current user: ${JSON.stringify(user)}`);
     }, [user]); // Logs whenever `user` changes
 
-    const login = (userData) => {
+    const login = (userData,userToken) => {
         setUser(userData);
+        setUserToken(userToken)
         sessionStorage.setItem('user', JSON.stringify(userData));
     };
 
     const logout = () => {
-        sessionStorage.removeItem('user');
-        setUser(null);
+        window.location.reload()
+        setTimeout(()=>
+            {sessionStorage.removeItem('user')
+            setUser(null);
+            },400)
     };
 
     return (

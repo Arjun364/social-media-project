@@ -12,12 +12,14 @@ import AddCommunities from './AddCommunities';
 
 
 
-const Sidebar = ({isSection}) => {
+const Sidebar = ({ isSection }) => {
     const [isRecentDropped, setIsRecentDropped] = useState(true)
     const [isCommunityDropped, setIsCommunityDropped] = useState(true)
 
+
+
     const navigate = useNavigate()
-    const handleNavigation =(navigateto)=>{
+    const handleNavigation = (navigateto) => {
         isSection(navigateto)
         navigate(`/${navigateto}`)
     }
@@ -27,19 +29,19 @@ const Sidebar = ({isSection}) => {
             {/* main sidebar */}
             <div className='flex flex-col gap-1 border-b border-solid pb-5'>
                 {/* home section */}
-                <motion.button className='w-full flex items-center gap-3 font-medium px-2 py-2 hover:bg-slate-200 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150' onClick={()=>handleNavigation('home')}>
+                <motion.button className='w-full flex items-center gap-3 font-medium px-2 py-2 hover:bg-slate-200 dark:hover:bg-slate-700 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150' onClick={() => handleNavigation('home')}>
                     <AiOutlineHome className='text-[1.5rem]' />
                     Home
                 </motion.button>
                 {/* expolre section */}
-                <motion.button className='w-full flex items-center gap-3 font-medium px-2 py-2 hover:bg-slate-200 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150' onClick={()=>handleNavigation('explore')}>
-                    <MdOutlineExplore className='text-[1.5rem]'  />
+                <motion.button className='w-full flex items-center gap-3 font-medium px-2 py-2 hover:bg-slate-200 dark:hover:bg-slate-700 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150' onClick={() => handleNavigation('explore')}>
+                    <MdOutlineExplore className='text-[1.5rem]' />
                     Explore
                 </motion.button>
             </div>
             {/* recent section */}
             <div className={`${isRecentDropped ? 'pb-5' : ''} flex flex-col gap-2 border-b border-solid `}>
-                <button name='recent' className='w-full flex items-center justify-between font-medium px-2 py-2 text-slate-700 hover:bg-slate-200 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150' onClick={() => setIsRecentDropped(!isRecentDropped)}>
+                <button name='recent' className='w-full flex items-center justify-between font-medium px-2 py-2 text-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 focus:bg-slate-100 dark:focus:bg-slate-600 rounded-md transition-all ease-linear duration-150' onClick={() => setIsRecentDropped(!isRecentDropped)}>
                     recent
                     <IoIosArrowDown className={`${isRecentDropped ? 'rotate-180' : ''}`} />
                 </button>
@@ -55,9 +57,10 @@ const Sidebar = ({isSection}) => {
                                     exit={{ opacity: 0, height: 0 }}
                                     transition={{ duration: 0.3, ease: "easeInOut" }}
                                     className="flex items-center gap-2"
+                                    onClick={() => handleNavigation('community')}
                                 >
                                     <div className="w-[2rem] h-[2rem] rounded-full bg-slate-400"></div>
-                                    example1
+                                    community4
                                 </motion.li>
                                 {/* option2 */}
                                 <motion.li
@@ -68,7 +71,7 @@ const Sidebar = ({isSection}) => {
                                     className="flex items-center gap-2"
                                 >
                                     <div className="w-[2rem] h-[2rem] rounded-full bg-slate-400"></div>
-                                    example2
+                                    community10
                                 </motion.li>
                                 {/* option3 */}
                                 <motion.li
@@ -79,7 +82,7 @@ const Sidebar = ({isSection}) => {
                                     className="flex items-center gap-2"
                                 >
                                     <div className="w-[2rem] h-[2rem] rounded-full bg-slate-400"></div>
-                                    example3
+                                    community1
                                 </motion.li>
                                 {/* option4 */}
                                 <motion.li
@@ -90,7 +93,7 @@ const Sidebar = ({isSection}) => {
                                     className="flex items-center gap-2"
                                 >
                                     <div className="w-[2rem] h-[2rem] rounded-full bg-slate-400"></div>
-                                    example4
+                                    community2
                                 </motion.li>
                             </>
                         )}
@@ -99,7 +102,7 @@ const Sidebar = ({isSection}) => {
             </div>
             {/* communities section */}
             <div className={`${isCommunityDropped ? 'pb-5' : ''} flex flex-col gap-2 border-b border-solid `}>
-                <button name='recent' className='w-full flex items-center justify-between font-medium px-2 py-2 text-slate-700 hover:bg-slate-200 focus:bg-slate-100 rounded-md transition-all ease-linear duration-150' onClick={() => setIsCommunityDropped(!isCommunityDropped)}>
+                <button name='recent' className='w-full flex items-center justify-between font-medium px-2 py-2 text-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 focus:bg-slate-100 dark:focus:bg-slate-600 rounded-md transition-all ease-linear duration-150' onClick={() => setIsCommunityDropped(!isCommunityDropped)}>
                     Communities
                     <IoIosArrowDown className={`${isCommunityDropped ? 'rotate-180' : ''}`} />
                 </button>
@@ -108,7 +111,7 @@ const Sidebar = ({isSection}) => {
                     <AnimatePresence>
                         {isCommunityDropped && (
                             <>
-                                <AddCommunities/>
+                                <AddCommunities />
                                 {/* option1 */}
                                 <motion.li
                                     initial={{ opacity: 0, height: 0 }}
@@ -116,6 +119,7 @@ const Sidebar = ({isSection}) => {
                                     exit={{ opacity: 0, height: 0 }}
                                     transition={{ duration: 0.3, ease: "easeInOut" }}
                                     className="flex items-center gap-2"
+                                    onClick={() => handleNavigation('community')}
                                 >
                                     <div className="w-[2rem] h-[2rem] rounded-full bg-slate-400"></div>
                                     community1

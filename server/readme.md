@@ -5,6 +5,8 @@
     dotenv :+ npm i dotenv
     mongoose :+ npm i mongoose
     mongoDB :+ npm i mongodb
+    jsonwebtoken :+ npm i jsonwebtoken
+    node-argon2 :+ npm i argon2 // it is for the hasing of the passwords
 
 
 # use npm i before setting template

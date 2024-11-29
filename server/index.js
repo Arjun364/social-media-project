@@ -2,16 +2,20 @@
 require('dotenv').config();
 // import the express framwork
 const express = require('express')
+// import the router
+const router = require('./Router/router')
 // import cors to connect between the server host and client host
 const cors =require('cors')
 // create a server using express
 const server = express()
-// create a port for the server to run :4000
-const PORT = 4000
-
 // middlewares for the server
 server.use(cors())
 server.use(express.json())
+server.use(router)
+// create a port for the server to run :4000
+const PORT = process.env.PORT || 4000
+// import the mongodb connection to the server
+require('./DB/connections')
 
 // default API port
 server.get('/',(req,res)=>{
@@ -20,5 +24,5 @@ server.get('/',(req,res)=>{
 
 // listening the server
 server.listen((PORT),()=>{
-    console.log(`The server is listening in the PORT:${PORT}`);
+    console.log(`The server is listening in the PORT: ${PORT}`);
 })

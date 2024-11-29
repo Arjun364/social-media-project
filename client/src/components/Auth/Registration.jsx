@@ -1,9 +1,83 @@
 import React from 'react'
-import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Navigate, useNavigate } from 'react-router-dom';
+// 3rd party
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+// alert libary
+import { ToastContainer, toast,Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// APIs
+import { registrationAPI } from '../../services/allAPIs';
 
 const Registration = () => {
     const navigate = useNavigate()
+
+    // the logic for the registration of the user 
+    const createUserAccount = async (userCreditentials,resetForm,setErrors) => {
+        try {
+            // fetch the user registration api
+            const result = await registrationAPI(userCreditentials)
+            console.log(result);
+            if (result.status>=200 && result.status<=299) {
+                // for success registration
+                toast.success(result.data.message, {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,})
+                resetForm()
+                setTimeout(()=>
+                    navigate(`/login`)
+                ,600)
+            }else if(result.status==301){
+                // for having both of the username and email 
+                toast.error(result.response.data.message, {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,})
+                setErrors({username:result.response.data.message})
+            }else if (result.status==302){
+                // for having username present in the database
+                toast.error(result.response.data.message, {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,})
+                setErrors({username:result.response.data.message})
+            }else if(result.status==303){
+                // for having email address present in the database
+                toast.error(result.response.data.message, {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,})
+                setErrors({email:result.response.data.message})
+            }
+            
+        } catch (err) {
+            console.error(`Error in creating the is user`);
+        }
+    }
     return (
         <Formik
             initialValues={{ username: '', email: '', password: '', Cpassword: "" }}
@@ -44,17 +118,17 @@ const Registration = () => {
 
                 return errors;
             }}
-            onSubmit={(values, { setSubmitting }) => {
-                setTimeout(() => {
-                    alert(JSON.stringify(values, null, 2));
-                    setSubmitting(false);
-                }, 400);
+            onSubmit={(values, { setSubmitting,resetForm,setErrors }) => {
+                const userCreditentials = {username:values.username,email:values.email,password:values.password}
+                createUserAccount(userCreditentials,resetForm,setErrors)
+                setSubmitting(false);
             }}
         >
             {({ isSubmitting }) => (
                 <Form className=' absolute mx-3 top-[2rem] md:top-0 rounded-lg md:min-h-full bg-white/40 backdrop-blur-sm md:relative flex-1 px-[2rem] py-[1rem] md:px-[4rem] lx:px-[5rem] flex justify-center  flex-col gap-3'>
+                    <ToastContainer />
                     <h2 className='leading-[2rem] md:leading-[3.4rem] text-center md:text-left'>Join the Connectify Community 😘</h2>
-                    <p className='text-center text-slate-700  md:text-left text-sm md:text-lg'>Connect and grow with like-minded people.</p>
+                    <p className='text-center text-slate-700 dark:  md:text-left text-sm md:text-lg'>Connect and grow with like-minded people.</p>
                     {/* username section */}
                     <div className='flex flex-col gap-1'>
                         <Field className="txtbox" type="Text" name="username" placeholder='Your Name' />

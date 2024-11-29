@@ -5,3 +5,13 @@ import { serverUrl } from "./serverUrl"
 // export const getVideoAPI =async()=>{
 //     return await commonAPI('get',`${serverUrl}/videos`,{})
 // }
+
+// authientication api request
+// registration
+export const registrationAPI =async(reqbody)=>{
+    return await commonAPI('post',`${serverUrl}/registration`,reqbody,"")
+}
+// login 
+export const loginAPI =async(reqbody)=>{
+    return await commonAPI('post',`${serverUrl}/login`,reqbody,"")
+}

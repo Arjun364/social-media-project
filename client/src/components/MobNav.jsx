@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SearchComponent from './SearchComponent'
 //icons
 import { IoNotificationsOutline } from "react-icons/io5";
-import NotificationComponent from './notificationComponent';
+import NotificationComponent from './NotificationComponent';
 import DarkModeSwitcher from './DarkModeSwitcher';
 
 const MobNav = ({isSection}) => {

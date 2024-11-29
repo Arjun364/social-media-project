@@ -12,14 +12,14 @@ import { IoChatbubbleEllipsesOutline, IoNotificationsOutline} from "react-icons/
 import { AiOutlineHome } from "react-icons/ai";
 import { MdAdd,MdOutlineExplore } from "react-icons/md";
 import SearchComponent from './SearchComponent';
-import NotificationComponent from './notificationComponent';
+import NotificationComponent from './NotificationComponent';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import ProfileIcon from './ProfileIcon';
 
 
 
 
-const NavigatioinBar = ({isSection}) => {
+const NavigatioinBar = ({isSection,userCreditials}) => {
     const [isNotification, setIsNotification] = useState(true)
 
     const navigate = useNavigate()
@@ -31,7 +31,7 @@ const NavigatioinBar = ({isSection}) => {
    
     return (
         <Flowbite >
-            <div className='absolute bottom-[.5rem] md:relative md:top-0 bg-slate-200 md:bg-transparent md:w-full px-[2rem] rounded-full md:rounded-none md:px-[2.5rem] py-2 md:py-4 md:gap-3 flex items-center justify-center md:justify-between border-b-2 border-solid'>
+            <div className='absolute bottom-[.5rem] z-50 md:relative md:top-0 bg-slate-200 dark:bg-gray-800 md:bg-transparent md:w-full px-[2rem] rounded-full md:rounded-none md:px-[2.5rem] py-2 md:py-4 md:gap-3 flex items-center justify-center md:justify-between border-b-2 border-solid'>
                 <span className='hidden md:block'>connectify</span>
                 {/* search section */}
                 <SearchComponent visible={false} />
@@ -40,7 +40,7 @@ const NavigatioinBar = ({isSection}) => {
                     {/* home section for mobile */}
                     <AiOutlineHome className='block md:hidden text-[1.8rem]' onClick={()=>handleNavigation('home')} />
                     {/* chat option */}
-                    <IoChatbubbleEllipsesOutline className='text-[1.8rem] cursor-pointer' />
+                    <IoChatbubbleEllipsesOutline className='text-[1.8rem] cursor-pointer' onClick={()=>handleNavigation('message')}/>
                     {/* create post option  */}
                     <motion.div
                         className="relative overflow-hidden hover:bg-slate-200 px-[.25rem] md:px-[.5rem] py-1 flex items-center justify-center rounded-full cursor-pointer" onClick={()=>handleNavigation('createpost')}>
@@ -52,9 +52,9 @@ const NavigatioinBar = ({isSection}) => {
                     {/* notification  */}
                     <NotificationComponent visible={false} isSection={isSection} />
                     {/* avatar */}                    
-                    <ProfileIcon />
+                    <ProfileIcon isSection={isSection} userCreditials={userCreditials}/>
                     {/* darkmode switcher */}
-                    <DarkModeSwitcher  visible={false}/>
+                    <DarkModeSwitcher visible={false}/>
                 </div>
             </div>
         </Flowbite>

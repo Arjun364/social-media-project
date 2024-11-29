@@ -15,6 +15,13 @@ import ErrorPage from './pages/ErrorPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import Dashboard from './pages/Admin/Dashboard.jsx'
 import Authentication from './pages/Authentication.jsx'
+import Posts from './components/Contents/Profile/Posts.jsx'
+import Comments from './components/Contents/Profile/Comments.jsx'
+import Saved from './components/Contents/Profile/Saved.jsx'
+import Account from './components/Contents/Settings/Account.jsx'
+import ProfileSettings from './components/Contents/Settings/ProfileSettings.jsx'
+import NotificationComponent from './components/NotificationComponent.jsx'
+import NotificationSettings from './components/Contents/Settings/NotificationSettings.jsx'
 
 // routes
 const router = createBrowserRouter([
@@ -40,6 +47,19 @@ const router = createBrowserRouter([
       {path:'/explore',element:<HomePage content={'explore'} />},
       {path:'/createpost',element:<HomePage content={'createpost'} />},
       {path:'/notification',element:<HomePage content={'notification'} />},
+      { path: '/viewProfile', element: <HomePage content="viewProfile" />, children: [
+        { path: 'post', element: <Posts /> },
+        { path: 'comments', element: <Comments/> },
+        { path: 'saved', element: <Saved/> },
+      ] 
+    },
+      {path:'/setting',element:<HomePage content={'setting'} />,children:[
+        {path:'account',element:<Account/>},
+        {path:'profile',element:<ProfileSettings/>},
+        {path:'notification',element:<NotificationSettings/>},
+      ]},
+      {path:'/community',element:<HomePage content={'community'} />},
+      {path:'/message',element:<HomePage content={'message'} />},
     ]
   },
   {
