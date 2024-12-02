@@ -17,7 +17,7 @@ const Post = ({userCreditials,postdata}) => {
     const [isBook, setIsBook] = useState(false)
     const [isComment, setIsComment] = useState('')
 
-    console.log(userCreditials);
+    // console.log(userCreditials);
     
 
     // open the post section

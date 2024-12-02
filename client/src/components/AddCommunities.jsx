@@ -29,7 +29,7 @@ const AddCommunities = () => {
         console.log(CommmunityDetails);
         
     }
-    console.log(CommmunityDetails);
+    // console.log(CommmunityDetails);
     return (
         <div>
             {/* addcommunity */}

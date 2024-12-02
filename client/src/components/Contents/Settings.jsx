@@ -11,7 +11,6 @@ const Settings = () => {
                 <div className="flex items-center dark:bg-gray-100 dark:text-gray-800 ">
                     <NavLink rel="noopener noreferrer" to="/setting/account" className={`px-5 py-1 border-b-2 border-solid ${tab === "account" ? 'border-black dark:border-white' : 'border-transparent'} `} onClick={() => setTab("account")}>Account</NavLink>
                     <NavLink rel="noopener noreferrer" to="/setting/profile" className={`px-5 py-1 border-b-2 border-solid ${tab === "profileSetting" ? 'border-black dark:border-white' : 'border-transparent'} `} onClick={() => setTab("profileSetting")}>Profile</NavLink>
-                    <NavLink rel="noopener noreferrer" to="/setting/notification" className={`px-5 py-1 border-b-2 border-solid ${tab === "notificationSetting" ? 'border-black dark:border-white' : 'border-transparent'} `} onClick={() => setTab("notificationSetting")}>Notification</NavLink>
                 </div>
                 <Outlet/>
             </div>

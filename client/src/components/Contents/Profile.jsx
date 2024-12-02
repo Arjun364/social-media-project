@@ -1,30 +1,65 @@
-import React, { useState } from 'react'
+import React, { useState ,useEffect} from 'react'
+import { serverUrl } from '../../services/serverUrl';
 // avatars
 import avatar from '../../assets/avatar2.jpg'
-import { Link, Outlet } from 'react-router-dom'
-// import avatar2 from '../assets/avatar2.jpg'
-// import avatar3 from '../assets/avatar3.jpg'
-// import avatar4 from '../assets/avatar4.jpg'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+
 
 // icons
 import { IoAddOutline } from "react-icons/io5";
+import { fetchUserData } from '../../utils/fetchuserdata';
 // banner image
-import imgbanner from '../../assets/chainsawman2.jpg'
 
-const Profile = ({ userCreditials }) => {
+
+const Profile = ({isSection}) => {
   const [tab, setTab] = useState('post')
-  console.log(userCreditials);
+  const [userdata, setUserdata] = useState({
+    username: "",
+    displayname: "",
+    role: "user",
+    userImg: avatar,
+    imgbanner: null,
+    about: "",
+    dob: "",
+    post: 0,
+    comments: 0,
+    explore: []
+  });
 
+  const navigate = useNavigate()
+  const handleNavigation =(navigateto)=>{
+    isSection(navigateto)
+    navigate(`/${navigateto}/profile`)
+}
+
+  useEffect(() => {
+    const getuserdata = async () => {
+        const result = await fetchUserData()
+        
+        setUserdata({
+          username: result.user.username,
+          displayname: result.user.displayname,
+          role: result.user.role,
+          userImg: result.user.profilePic,
+          imgbanner: result.user.bannerPic,
+          about: result.user.description,
+          dob: result.user.dob,
+          post: result.user.karmas.post,
+          comments: result.user.karmas.comment
+        })
+    }
+    getuserdata()
+},[])
   return (
     <div className='w-full h-full flex gap-3 md:px-[2rem] lx:px-[8rem] py-4 overflow-x-hidden overflow-y-scroll'>
       {/* left section */}
       <div className=' h-full flex-1 flex flex-col gap-3 px-[2rem] py-[1rem]'>
         {/* profile photo and userid */}
         <div className='w-full flex items-center gap-2'>
-          <img src={userCreditials.userImg || avatar} alt="profile section" className='w-[8rem] h-[8rem] rounded-full' />
+          <img src={`${serverUrl}/${userdata.userImg}` || avatar} alt="profile section" className='w-[8rem] h-[8rem] rounded-full' />
           <div className='flex flex-col'>
-            <h3 className='leading-[1.4rem] flex items-center gap-2'>{userCreditials.username || "username"} {userCreditials.role == "admin" ? <div className='bg-red-500 rounded-full flex items-center justify-center text-white text-sm py-1 px-2'>admin</div> : ""}</h3>
-            <span className={`${userCreditials.role == "admin" ? "text-red-500" : "text-slate-600"}`}>{userCreditials.role == "admin" ? "a" : "u"}/{userCreditials.username}</span>
+            <h3 className='leading-[1.4rem] flex items-center gap-2'>{userdata.displayname || "username"} {userdata.role == "admin" ? <div className='bg-red-500 rounded-full flex items-center justify-center text-white text-sm py-1 px-2'>admin</div> : ""}</h3>
+            <span className={`${userdata.role == "admin" ? "text-red-500" : "text-slate-600"}`}>{userdata.role == "admin" ? "a" : "u"}/{userdata.username}</span>
           </div>
         </div>
         {/* tab section */}
@@ -38,43 +73,37 @@ const Profile = ({ userCreditials }) => {
       </div>
       {/* right section */}
       <div className='bg-slate-100 dark:bg-slate-900 h-full w-[20rem] rounded-md overflow-x-hidden overflow-y-scroll hidden flex-col  xl:flex'>
-        <img src={userCreditials.imgbanner} alt="banner" />
+        <img src={`${serverUrl}/${userdata.imgbanner}`} alt="banner" className='max-h-[10rem]' />
         <div className='px-2 flex flex-col gap-2'>
-          <h3>{userCreditials.username}</h3>
+          <h3>{userdata.displayname}</h3>
+          <p className='text-slate-600 dark:text-slate-400 font-semibold'>{userdata.about ||"user description"}</p>
           {/* info  */}
           <div className='w-full grid grid-cols-2 gap-2 *:text-base'>
-            <div className='flex flex-col'>{userCreditials.post.length}<span className='text-slate-600 dark:text-slate-400 text-[.8rem]'>Post Karma</span></div>
-            <div className='flex flex-col'>0<span className='text-slate-600 dark:text-slate-400 text-[.8rem]'>Comment Karma</span></div>
-            <div className='flex flex-col'>Apr 19 2023<span className='text-slate-600 dark:text-slate-400 text-[.8rem]'>Cake Day</span></div>
+            <div className='flex flex-col'>{userdata.post}<span className='text-slate-600 dark:text-slate-400 text-[.8rem]'>Post Karma</span></div>
+            <div className='flex flex-col'>{userdata.comments}<span className='text-slate-600 dark:text-slate-400 text-[.8rem]'>Comment Karma</span></div>
+            <div className='flex flex-col'>{userdata.dob}<span className='text-slate-600 dark:text-slate-400 text-[.8rem]'>Cake Day</span></div>
           </div>
-          {/* links */}
-          <hr className='w-full h-[.1rem] border-0 bg-slate-300' />
-          <span className='text-sm font-semibold text-slate-500'>links</span>
-          <div className='w-full '>
-            <div className='w-full h-[2.5rem] bg-white dark:bg-slate-600 hover:bg-slate-200 cursor-pointer rounded-md flex items-center px-2'>
-              <IoAddOutline className='text-[1.7rem]' />
-              Add links
-            </div>
-          </div>
+
           <hr className='w-full h-[.1rem] border-0 bg-slate-300' />
           {/* settings */}
           <span className='text-sm font-semibold text-slate-500'>Settings</span>
           {/* option */}
-          <div class="flex items-center justify-between px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm">
             {/* <!-- Profile Section --> */}
-            <div class="flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
               {/* <!-- Avatar --> */}
-              <img src={userCreditials.userImg} alt="Profile Avatar" class="w-10 h-10 rounded-full"/>
+              <img src={`${serverUrl}/${userdata.userImg}` || avatar} alt="Profile Avatar" class="w-10 h-10 rounded-full"/>
               {/* <!-- Profile Text --> */}
               <div>
-                <h3 class="text-[16px] font-semibold text-gray-800">Profile</h3>
-                <p class="text-[10px] text-gray-500">Customize your profile</p>
+                <h3 className="text-[16px] font-semibold text-gray-800">Profile</h3>
+                <p className="text-[10px] text-gray-500">Customize your profile</p>
               </div>
             </div>
 
             {/* <!-- Edit Profile Button --> */}
             <button
-              class="px-4 py-2 text-[10px] font-medium text-white bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+              className="px-4 py-2 text-[10px] font-medium text-white bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+              onClick={() => handleNavigation("setting")}
             >
               Edit Profile
             </button>

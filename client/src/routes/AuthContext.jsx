@@ -28,6 +28,8 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
         setUserToken(userToken)
         sessionStorage.setItem('user', JSON.stringify(userData));
+        // cookie generation of user token 
+        document.cookie = `userToken=${userToken}; path=/; max-age=${60 * 60 * 24}; Secure; SameSite=Strict`;
     };
 
     const logout = () => {

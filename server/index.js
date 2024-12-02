@@ -16,6 +16,8 @@ server.use(router)
 const PORT = process.env.PORT || 4000
 // import the mongodb connection to the server
 require('./DB/connections')
+// Serve static files from the 'uploads' folder
+server.use('/uploads', express.static('uploads'));
 
 // default API port
 server.get('/',(req,res)=>{

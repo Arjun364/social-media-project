@@ -29,8 +29,12 @@ const Login = () => {
                     theme: "light",
                     transition: Bounce,
                 })
+                const userdata ={
+                    userid:result.data.user._id,
+                    role:result.data.user.role
+                }
                 setTimeout(()=>{
-                    login(result.data.user,result.data.token);
+                    login(userdata,result.data.token);
                     navigate('/home')},1000)
             } else if (result.status == 401) {
                 // for Invalid username or password

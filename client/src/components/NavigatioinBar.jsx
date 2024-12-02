@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
+
 // flowbite
 import { Flowbite } from "flowbite-react";
 // animation 
@@ -19,8 +20,10 @@ import ProfileIcon from './ProfileIcon';
 
 
 
+
 const NavigatioinBar = ({isSection,userCreditials}) => {
     const [isNotification, setIsNotification] = useState(true)
+
 
     const navigate = useNavigate()
     const handleNavigation =(navigateto)=>{
@@ -28,7 +31,7 @@ const NavigatioinBar = ({isSection,userCreditials}) => {
         navigate(`/${navigateto}`)
     }
 
-   
+
     return (
         <Flowbite >
             <div className='absolute bottom-[.5rem] z-50 md:relative md:top-0 bg-slate-200 dark:bg-gray-800 md:bg-transparent md:w-full px-[2rem] rounded-full md:rounded-none md:px-[2.5rem] py-2 md:py-4 md:gap-3 flex items-center justify-center md:justify-between border-b-2 border-solid'>

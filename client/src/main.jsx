@@ -56,7 +56,6 @@ const router = createBrowserRouter([
       {path:'/setting',element:<HomePage content={'setting'} />,children:[
         {path:'account',element:<Account/>},
         {path:'profile',element:<ProfileSettings/>},
-        {path:'notification',element:<NotificationSettings/>},
       ]},
       {path:'/community',element:<HomePage content={'community'} />},
       {path:'/message',element:<HomePage content={'message'} />},

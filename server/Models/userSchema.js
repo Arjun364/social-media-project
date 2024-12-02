@@ -5,11 +5,26 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    displayname: {
+        type: String,
+    },
+    description: {
+        type: String,
+        default:""
+    },
+    gender: {
+        type: String,
+        default:""
+    },
     email: {
         type: String,
         required: true
     },
     password: {
+        type: String,
+        required: true
+    },
+    displaypassword: {
         type: String,
         required: true
     },
@@ -29,11 +44,11 @@ const userSchema = new mongoose.Schema({
     ],
     profilePic: {
         type: String,
-        default:""
+        default:'uploads/profiles/1733086448231-bg.jpg'
     },
     bannerPic: {
         type: String,
-        default:""
+        default:"uploads/banners/1733086461810-magicpattern-65O4Dw6-xLg-unsplash.jpg"
     },
     karmas: {
         post: { type: Number, default: 0 },
