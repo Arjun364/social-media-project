@@ -29,11 +29,16 @@ import Message from '../components/Contents/Message'
 // apis
 import { getuserApi } from '../services/allAPIs';
 import { fetchUserData } from '../utils/fetchuserdata';
+import ViewUser from '../components/Contents/ViewUser';
+import { useLocation, useParams } from 'react-router-dom';
 
 
 
 
 const HomePage = ({ content }) => {
+    const location =useLocation()
+    console.log(location);
+    
     const [section, isSection] = useState(content)
     const [userCreditials,setUserCreditial] = useState({
         username: "",
@@ -59,10 +64,12 @@ const HomePage = ({ content }) => {
         ]
     })
     console.log(userCreditials);
-    
+    // Update section based on the current URL
     useEffect(() => {
-
-    }, [])
+        const path = location.pathname.split('/')[1]; // Extract the first segment of the path
+        isSection(path || 'home'); // Default to 'home' if path is empty
+    }, [location]); // Run whenever the location changes
+    
     return (
         <div className='w-full h-[100vh] dark:bg-gray-800 dark:text-white flex flex-col items-center' >
             {/* navigation bar for mobiles */}
@@ -78,9 +85,10 @@ const HomePage = ({ content }) => {
                 {section === 'createpost' ? <CreatePost /> : ''}
                 {section === 'notification' ? <NotificationSection /> : ''}
                 {section === 'viewProfile' ? <Profile userCreditials={userCreditials} isSection={isSection}   /> : ''}
-                {section === 'community' ? <Community /> : ''}
+                {section === 'community' ? <Community isSection={isSection} /> : ''}
                 {section === 'message' ? <Message /> : ''}
                 {section === 'setting' ? <Settings /> : ''}
+                {section === 'viewuser' ? <ViewUser/> : ''}
             </div>
         </div>
     )

@@ -14,19 +14,29 @@ const storage = multer.diskStorage({
             folder = "uploads/posts/images";
         } else if (file.fieldname === "postVideo") {
             folder = "uploads/posts/videos";
+        } else if (file.fieldname === "icon") {
+            folder = "uploads/communities/images";
+        } else if (file.fieldname === "banner") {
+            folder = "uploads/communities/banners";
         }
 
         cb(null, folder);
     },
     filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}-${file.originalname}`;
+        // Replace spaces and special characters with underscores
+        const sanitizedOriginalName = file.originalname
+            .toLowerCase() // Convert to lowercase for consistency
+            .replace(/\s+/g, "_") // Replace spaces with underscores
+            .replace(/[^a-z0-9_.-]/g, ""); // Remove characters other than alphanumerics, underscores, dots, and hyphens
+
+        const uniqueName = `${Date.now()}-${sanitizedOriginalName}`;
         cb(null, uniqueName); // Save file with a unique timestamped name
     },
 });
 
 // File filter (optional)
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "video/mp4"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif","image/webp", "video/mp4"];
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {

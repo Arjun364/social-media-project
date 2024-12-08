@@ -66,7 +66,7 @@ exports.login = async (req, res) => {
     // logic starts here
     try {
         const existinguser = await users.findOne({ username })
-        console.log(existinguser);
+        // console.log(existinguser);
         if (existinguser) {
             // if the user is present check the password of the user is correct or not
             if (await argon2.verify(existinguser.password, password)) {
@@ -129,7 +129,6 @@ exports.updateuserprofile = async (req, res) => {
         if (!userid || !mongoose.Types.ObjectId.isValid(userid)) {
             return res.status(400).json({ message: "Invalid User ID" });
         }
-
 
         // Step 2: Filter allowed fields from the request body
         const allowedUpdates = ['displayname', 'description', 'profilePic', 'bannerPic']; // Adjust fields based on schema
@@ -245,6 +244,41 @@ exports.updateuseraccount = async (req, res) => {
         console.error("Error updating user profile:", err);
         return res.status(500).json({
             message: "The user account data updating error",
+            error: err.message,
+        });
+    }
+}
+
+// get the user following list of the user
+exports.getuserfollowinglist = async (req, res) => {
+    console.log(`inside the get user following list route`);
+    const { userid } = req.params
+    console.log({ userid })
+    // logic starts
+    try {
+        // Step 1: Validate the User ID
+        if (!userid || !mongoose.Types.ObjectId.isValid(userid)) {
+            return res.status(400).json({ message: "Invalid User ID" });
+        }
+
+        // Step 2: Get the Existing User
+        const existingUser = await users.findById(userid);
+        if (!existingUser) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        // Step 3: Get the User's Following List
+        const followingList = existingUser.following;
+        if (!followingList || followingList.length === 0) {
+            return res.status(304).json({ message: "User has no following list" });
+        }else{
+            return res.status(200).json({ followingList });
+        }
+        
+    } catch (error) {
+        console.error("Error in fetching the user following list:", err);
+        return res.status(500).json({
+            message: "The fetching the user following list error",
             error: err.message,
         });
     }

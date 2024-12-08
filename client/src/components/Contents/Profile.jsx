@@ -6,7 +6,6 @@ import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 
 // icons
-import { IoAddOutline } from "react-icons/io5";
 import { fetchUserData } from '../../utils/fetchuserdata';
 // banner image
 
@@ -34,7 +33,8 @@ const Profile = ({isSection}) => {
 
   useEffect(() => {
     const getuserdata = async () => {
-        const result = await fetchUserData()
+        const currentuser = JSON.parse(sessionStorage.getItem('user'))
+        const result = await fetchUserData(currentuser.userid)
         
         setUserdata({
           username: result.user.username,

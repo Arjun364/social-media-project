@@ -70,27 +70,27 @@ const ProfileSettings = () => {
   const handleProfileUpdate = async () => {
     try {
       const currentUser = JSON.parse(sessionStorage.getItem("user"));
-  
+
       if (!currentUser) {
         console.error("User not logged in.");
         return;
       }
-  
+
       const getCookie = (cookieName) => {
         const cookies = document.cookie.split("; ");
         const cookie = cookies.find((row) => row.startsWith(`${cookieName}=`));
         return cookie ? cookie.split("=")[1] : null;
       };
-  
+
       const userToken = getCookie("userToken");
-  
+
       if (!userToken) {
         console.error("Token missing.");
         return;
       }
-  
+
       const reqHeader = { Authorization: `Bearer ${userToken}` };
-  
+
       // Prepare form data for avatar and banner uploads
       const formData = new FormData();
       formData.append("displayname", profileDetails.displayname);
@@ -101,9 +101,9 @@ const ProfileSettings = () => {
       if (profileDetails.banner instanceof File) {
         formData.append("bannerPic", profileDetails.banner);
       }
-  
+
       const response = await updateuserprofileApi(currentUser.userid, formData, reqHeader);
-  
+
       if (response.status >= 200 && response.status <= 299) {
         console.log("Profile updated successfully.");
         setProfileDetails({

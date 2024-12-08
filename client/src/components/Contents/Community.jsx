@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // flowbite
 import { Avatar, Dropdown } from "flowbite-react";
 // images
@@ -9,29 +9,92 @@ import avatar from '../../assets/avatar2.jpg'
 import avatar3 from '../../assets/avatar3.jpg'
 import { MdAdd } from "react-icons/md";
 import { FaPenAlt } from "react-icons/fa";
-import { BsThreeDots } from "react-icons/bs";
-import { IoNotificationsOutline,IoEarthOutline } from "react-icons/io5";
+import { IoEarthOutline } from "react-icons/io5";
 import { HiDotsHorizontal } from "react-icons/hi";
 // components
 import Post from './Post';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getcommunityDetailsAPI } from '../../services/allAPIs';
+import { serverUrl } from '../../services/serverUrl';
 
 
-const Community = () => {
-    const [menu,setMenu] =useState(false)
-    const moderators =[
-        {username:"arjun",img:avatar},
-        {username:"jinu",img:avatar4},
-        {username:"charly",img:avatar3},
-        {username:"kannan",img:avatar}
-    ]
+const Community = ({ isSection }) => {
+    const navigate = useNavigate()
+    const [menu, setMenu] = useState(false)
+    const [members, setMembers] = useState([
+        { username: "arjun", img: avatar },
+        { username: "jinu", img: avatar4 },
+        { username: "charly", img: avatar3 },
+        { username: "kannan", img: avatar }
+    ])
+    const [communityDetails, setCommunityDetails] = useState({})
+    const { id } = useParams()
+    const currentuser = sessionStorage.getItem('user')
+    // handle namvigation 
+    const handleNavigation = (navigateto) => {
+        const trimednavigate = navigateto.split('/')[0]
+        isSection(trimednavigate)
+        navigate(`/${navigateto}`)
+    }
+    // set the member 
+    useEffect(() => {
+        const setmembers = () => {
+            setMembers(communityDetails.members)
+        }
+        setmembers()
+    }, [communityDetails])
+
+    
+    // console.log(members);
+    // get the community details
+    useEffect(() => {
+        // console.log(id);
+        const getCommunitydetails = async () => {
+            try {
+                const currentuser = JSON.parse(sessionStorage.getItem("user")) //fetch the currrent user from the session storage
+                // Function to extract a specific cookie value
+                const getCookie = (cookieName) => {
+                    const cookies = document.cookie.split('; ');
+                    const cookie = cookies.find(row => row.startsWith(`${cookieName}=`));
+                    return cookie ? cookie.split('=')[1] : null;
+                };
+                // Fetch the user token from cookies
+                const userToken = getCookie('userToken');
+
+                // check if the user and the token is present
+                if (currentuser.userid && userToken) {
+                    // let make the header file for the reqbody
+                    const reqheader = {
+                        "Authorization": `Bearer ${userToken}`,
+                    }
+                    // let provide the community id and reqheader for the community details api 
+                    const result = await getcommunityDetailsAPI(id, reqheader)
+                    // console.log(result);
+                    // Set the data if the response was 200
+                    if (result.status >= 200 && result.status <= 299) {
+                        setCommunityDetails(result.data.community)
+                    }
+
+                } else {
+                    console.log(`Either currentuser or the usertoken is not founded`);
+
+                }
+            } catch (err) {
+                console.error(`Error in fetching the comunity details`);
+
+            }
+        }
+        getCommunitydetails() // lets call the function to get details
+        console.log(communityDetails);
+    }, [id])
     return (
         <div className='w-full h-full flex flex-col gap-3 md:px-[2rem] lx:px-[8rem] py-4 overflow-x-hidden overflow-y-scroll'>
             {/* header section */}
             <div className='w-full'>
-                <div className={`w-full h-[10rem] rounded-md relative bg-cover bg-center bg-no-repeat`} style={{ backgroundImage: `url(${bannerImg})` }}>
+                <div className={`w-full h-[10rem] rounded-md relative bg-cover bg-center bg-no-repeat`} style={{ backgroundImage: `url(${serverUrl}/${(communityDetails.communityBanner || "uploads/communities/banners/lockscren.jpg").replace(/\\/g, "/")})` }}>
                     <div className='absolute bottom-[-4rem] left-[.5rem] md:left-[3rem] flex items-end '>
-                        <img src={avatar4} alt="community icon" className=' border-[.5rem] border-solid border-white w-[8rem] h-[8rem] rounded-full' />
-                        <h5 className='pb-6'>Community name</h5>
+                        <img src={`${serverUrl}/${communityDetails.communitiyIcon || "uploads/communities/images/avatar1.jpg"}`} alt="community icon" className=' border-[.5rem] border-solid border-white w-[8rem] h-[8rem] rounded-full  object-cover' />
+                        <h5 className='pb-6'>{communityDetails.name || "community name"}</h5>
                     </div>
                 </div>
                 {/* community menu section */}
@@ -44,8 +107,8 @@ const Community = () => {
                     {/*  */}
 
                     <div className='relative lg:hidden'>
-                        <HiDotsHorizontal className=' text-[1.5rem]' onClick={()=>setMenu(!menu)} />
-                        <div className={`${menu?'':'hidden'} absolute top-[1.5rem] right-0 w-[10rem] flex flex-col items-start gap-1 bg-white dark:bg-slate-600 rounded-md px-2 py-3`}>
+                        <HiDotsHorizontal className=' text-[1.5rem]' onClick={() => setMenu(!menu)} />
+                        <div className={`${menu ? '' : 'hidden'} absolute top-[1.5rem] right-0 w-[10rem] flex flex-col items-start gap-1 bg-white dark:bg-slate-600 rounded-md px-2 py-3`}>
                             <button className='btn4'><MdAdd className='text-[1.2rem]' />Create Post</button>
                             <button className='btn5'>Join</button>
                         </div>
@@ -63,32 +126,61 @@ const Community = () => {
                     {/* about the community */}
                     <div className='w-full flex flex-col gap-3 pb-3 border-b-2 border-solid '>
                         <div className='w-full flex flex-col gap-2'>
-                        <span className='text-[.9rem] font-semibold'>Community heading or title</span>
-                        <p className='text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia culpa tenetur incidunt animi tempore molestiae eaque repellat laborum, consequatur exercitationem deserunt sapiente sed autem temporibus qui officia quaerat expedita adipisci.</p>
-                        <span className='flex gap-2 text-sm items-center'><FaPenAlt /> created jan 26</span>
-                        <span className='flex gap-2 text-sm items-center'><IoEarthOutline /> public</span>
-                        <div className='w-full grid grid-cols-2'>
-                            <div className='flex flex-col'>
-                                34M
-                                <span className='text-sm text-slate-700'>Members</span>
+                            <span className='text-[.9rem] font-semibold'>{communityDetails.description?.title || "description title"}</span>
+                            <p className='text-sm'>{communityDetails.description?.content || "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia culpa tenetur incidunt animi tempore molestiae eaque repellat laborum, consequatur exercitationem deserunt sapiente sed autem temporibus qui officia quaerat expedita adipisci."}</p>
+                            <span className='flex gap-2 text-sm items-center'><FaPenAlt /> {communityDetails.dateofcreation}</span>
+                            <span className='flex gap-2 text-sm items-center'><IoEarthOutline /> {communityDetails.type?.community}</span>
+                            <div className='w-full grid grid-cols-2'>
+                                <div className='flex flex-col'>
+                                    {communityDetails.members?.length}
+                                    <span className='text-sm text-slate-700'>Members</span>
+                                </div>
+                                <div className='flex flex-col'>
+                                    3K
+                                    <span className='text-sm text-slate-700 flex items-center gap-1'><div className='w-[.6rem] h-[.6rem] bg-green-500 rounded-full'></div>Online</span>
+                                </div>
                             </div>
-                            <div className='flex flex-col'>
-                                3K
-                                <span className='text-sm text-slate-700 flex items-center gap-1'><div className='w-[.6rem] h-[.6rem] bg-green-500 rounded-full'></div>Online</span>
-                            </div>
-                        </div>
                         </div>
                     </div>
-                    {/* moderators */}
-                    <div className='w-full'>
-                        <span className='font-medium'>Moderators</span>
+                    {/* option */}
+                            <div className="flex items-center my-[1rem] justify-between px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm">
+                                {/* Profile Section */}
+                                <div className="flex items-center space-x-4">
+                                    {/* Avatar */}
+                                    <img
+                                        src={
+                                            communityDetails.communitiyIcon
+                                                ? `${serverUrl}/${communityDetails.communitiyIcon}`
+                                                : avatar4
+                                        }
+                                        alt="Profile Avatar"
+                                        className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    {/* Profile Text */}
+                                    <div>
+                                        <h3 className="text-[16px] font-semibold text-gray-800">Profile</h3>
+                                        <p className="text-[10px] text-gray-500">Customize your profile</p>
+                                    </div>
+                                </div>
+
+                                {/* Edit Profile Button */}
+                                <button
+                                    className="px-4 py-2 text-[10px] font-medium text-white bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+                                    onClick={() => handleNavigation("setting")}
+                                >
+                                    Edit Profile
+                                </button>
+                            </div>
+                    {/* members */}
+                    <div className='w-full '>
+                        <span className='font-medium'>Members</span>
                         <div className='w-full flex flex-col'>
                             {/* users */}
-                            {moderators.map((users)=>(
-                            <div id={users.id} className='w-full px-2 py-1 flex items-center gap-1 cursor-pointer rounded-md'>
-                                <img src={users.img} alt="avatar" className='w-[2.5rem] h-[2.5rem] rounded-full' />
-                                <span className='text-sm'>u/{users.username}</span>
-                            </div>
+                            {members?.map((user, index) => (
+                                <div key={index} className='w-full px-2 py-2 flex items-center gap-1 cursor-pointer rounded-md hover:bg-white/40 transition-all duration-100 ease-linear' onClick={() => handleNavigation(`viewuser/${user.userid}`)}>
+                                    <img src={`${serverUrl}/${user.userimage}`} alt="avatar" className='w-[2.5rem] h-[2.5rem] rounded-full' />
+                                    <span className={`text-sm ${user.usertype == "moderator" ? "text-orange-500" : ""}`}>{user.usertype == "moderator" ? "m" : "u"}/{user.username}</span>
+                                </div>
                             ))}
                         </div>
                     </div>

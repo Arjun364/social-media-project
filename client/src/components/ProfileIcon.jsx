@@ -17,7 +17,7 @@ import avatar4 from '../assets/avatar4.jpg'
 import DarkModeSwitcher from './DarkModeSwitcher';
 // utlity function
 import { fetchUserData } from '../utils/fetchuserdata';
-const ProfileIcon = ({ isSection, userCreditials }) => {
+const ProfileIcon = ({ isSection }) => {
     const { logout } = useAuth()
 
     const [dropdown, setDropDown] = useState(false)
@@ -36,15 +36,13 @@ const ProfileIcon = ({ isSection, userCreditials }) => {
         }if (item === 'viewProfile') {
             isSection(item)
             navigate(`/${item}/post`)
-        }else {
-            isSection(item)
-            navigate(`/${item}`)
         }
     }
 
     useEffect(() => {
         const getuserdata = async () => {
-            const result = await fetchUserData()
+            const currentuser = JSON.parse(sessionStorage.getItem('user'))
+            const result = await fetchUserData(currentuser.userid)
             setUserimg(result.user.profilePic)
         }
         getuserdata()

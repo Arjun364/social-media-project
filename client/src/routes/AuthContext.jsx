@@ -1,5 +1,6 @@
 // AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
@@ -33,10 +34,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        window.location.reload()
         setTimeout(()=>
             {sessionStorage.removeItem('user')
-            setUser(null);
+                setUser(null);
+                window.location.reload()
             },400)
     };
 

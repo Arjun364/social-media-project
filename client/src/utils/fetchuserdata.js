@@ -1,9 +1,9 @@
 import { getuserApi } from '../services/allAPIs'; // import the getuserApi function
 import { useAuth } from '../routes/AuthContext'; // import the useAuth hook
 
-export const fetchUserData = async () => {
+export const fetchUserData = async (userid) => {
     try {
-        const currentuser = JSON.parse(sessionStorage.getItem('user'))
+        const currentuser = userid 
         // Function to extract a specific cookie value
         const getCookie = (cookieName) => {
             const cookies = document.cookie.split('; ');
@@ -22,7 +22,7 @@ export const fetchUserData = async () => {
             }
 
             // let call the get user api 
-            const result = await getuserApi(currentuser.userid, reqheader)
+            const result = await getuserApi(currentuser, reqheader)
             // console.log(result);
 
             if (result.status>=200 &&result.status<=299) {

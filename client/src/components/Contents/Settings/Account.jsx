@@ -40,6 +40,25 @@ const Account = () => {
         "I refer to myself as...",
     ]
 
+    // let fetch the user data and place in the account details 
+    const getuserdata = async () => {
+        try {
+            const currentuser = JSON.parse(sessionStorage.getItem('user'))
+            const result = await fetchUserData(currentuser.userid)
+            setAccountDetails({
+                email: result.user.email,
+                password: result.user.displaypassword,
+                gender: result.user.gender,
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        getuserdata()
+    }, [])
+
     const handleupdation = (updatingitem) => {
         setOpenModal(!openModal)
         setoption(updatingitem)
@@ -48,7 +67,7 @@ const Account = () => {
 
     }
 
-    const handleitemupdation = async (item) => {
+    const handleitemupdation = async () => {
         try {
             console.log(letupdate);
             const currentuser = JSON.parse(sessionStorage.getItem('user'))

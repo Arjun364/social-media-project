@@ -11,7 +11,7 @@ Currently, two official plugins are available:
 
 # Hey it is project template for react vite.  
 
-it is basic structure with tailwind and react icons [more things will be added later 😁]
+it is basic structure with tailwind and react icons [more things will be added later 😁] 
 
 ------------------------------------------------------------------------------------------------------------------------------------------
 

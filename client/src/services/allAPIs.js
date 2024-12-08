@@ -31,7 +31,29 @@ export const updateuseraccountApi =async(userid,reqbody,reqheader)=>{
     return await commonAPI('put',`${serverUrl}/useraccount/${userid}`,reqbody,reqheader)
 }
 
+// to fetch the user community following list
+export const getuserfollowinglistAPI =async(userid,reqheader)=>{
+    return await commonAPI('get',`${serverUrl}/userFollowingList/${userid}`,"",reqheader)
+} 
+
 // delete user account
 export const deleteuseraccountAPI =async(userid,reqheader)=>{
     return await commonAPI('delete',`${serverUrl}/user/${userid}`,"",reqheader)
 }
+
+
+// community APIs--------------------------------------------------------------------------------
+// create community
+export const createcommunityAPI =async(reqbody,reqheader)=>{
+    return await commonAPI('post',`${serverUrl}/addcommunity`,reqbody,reqheader)
+}
+
+// get community created by the user 
+export const getusercommunitiesAPI =async(userid,reqheader)=>{
+    return await commonAPI('get',`${serverUrl}/communities/${userid}`,"",reqheader)
+}
+
+// get the full details of the communtity 
+export const getcommunityDetailsAPI = async(communityid,reqheader)=>{
+    return await commonAPI('get',`${serverUrl}/community/${communityid}`,"",reqheader)
+} 
