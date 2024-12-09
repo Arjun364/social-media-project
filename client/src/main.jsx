@@ -47,6 +47,7 @@ const router = createBrowserRouter([
       { path: '/home', element: <HomePage content={'home'} /> },
       { path: '/explore', element: <HomePage content={'explore'} /> },
       { path: '/createpost', element: <HomePage content={'createpost'} /> },
+      { path: '/createpost/:communityid', element: <HomePage content={'createpost'} /> },
       { path: '/notification', element: <HomePage content={'notification'} /> },
       {
         path: '/viewProfile', element: <HomePage content="viewProfile" />, children: [

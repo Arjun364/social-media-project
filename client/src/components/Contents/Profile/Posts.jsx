@@ -1,33 +1,65 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Post from '../Post'
 
-import avatar from '../../../assets/avatar1.jpg'
-import avatar2 from '../../../assets/avatar2.jpg'
-import avatar3 from '../../../assets/avatar3.jpg'
-import avatar4 from '../../../assets/avatar4.jpg'
-import imgbanner from '../../../assets/chainsawman2.jpg'
-import imgbanner2 from '../../../assets/lockscren.jpg'
+import { getuserpostsAPI } from '../../../services/allAPIs'
 
 const Posts = () => {
-  const user = JSON.parse(sessionStorage.getItem('user'))
-  const userCreditials={
-    username:user.username,
-    role:user.role,
-    userImg:avatar,
-    imgbanner:imgbanner,
-    post:[
-        {id:1,title:'How is life',description:"life is so long as shit" ,img:imgbanner},
-        {id:2,title:'super man is the coolest',description:"nobody is like a superman " ,img:null},
-        {id:3,title:'Demon slayer new season',description:"one of the amazing season has aired today" ,img:imgbanner2}
-    ]
-}
-  console.log(userCreditials);
+  const [posts, setPosts] = useState([])
+  const [errMsg, setErrMsg] = useState('')
+
+  // console.log(posts);
   
+  const getuserCreatedPosts = async () => {
+    
+    try {
+      const currentuser = JSON.parse(sessionStorage.getItem("user"))
+      // Function to extract a specific cookie value
+      const getCookie = (cookieName) => {
+        const cookies = document.cookie.split('; ');
+        const cookie = cookies.find(row => row.startsWith(`${cookieName}=`));
+        return cookie ? cookie.split('=')[1] : null;
+      };
+  
+      // Fetch the user token from cookies
+      const userToken = getCookie('userToken');
+      
+      // check if the user and token is present
+      if (currentuser.userid && userToken) {
+        // let make the header file for the reqbody
+        const reqheader = {
+          "Authorization": `Bearer ${userToken}`,
+        }
+        // get the api response
+        const result = await getuserpostsAPI(currentuser.userid, reqheader)
+        console.log(result);
+
+        // check the result status
+        if (result.status == 200) {
+          setPosts(result.data.posts)
+        }else if (result.status == 201) {
+          setErrMsg(result.data.message)
+        }else if (result.status == 401) {
+          console.log("unauthorized access");
+        }
+
+      }
+    } catch (err) {
+      console.log(`The error in fetching the user created posts`);
+      
+    }
+  }
+
+  useEffect(() => {
+    getuserCreatedPosts()
+  }, [])
+
   return (
-    <div className='w-full h-[40rem] overflow-x-hidden overflow-y-scroll'>
-      {userCreditials.post.map((post)=>(
-        <Post id={post.id} postdata={post} userCreditials={userCreditials}/>
-      ))}
+    <div className='w-full h-[40rem] flex flex-col gap-[1rem] pb-4 overflow-x-hidden overflow-y-scroll'>
+      {
+        errMsg?
+        <h4>{errMsg}</h4>:
+        posts?.map((post) => <Post postdata={post} />)
+      }
     </div>
   )
 }

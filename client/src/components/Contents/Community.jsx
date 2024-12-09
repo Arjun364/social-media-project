@@ -14,8 +14,11 @@ import { HiDotsHorizontal } from "react-icons/hi";
 // components
 import Post from './Post';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getcommunityDetailsAPI } from '../../services/allAPIs';
+import { getcommunityDetailsAPI, userjoincommunityAPI, userleavecommunityAPI } from '../../services/allAPIs';
 import { serverUrl } from '../../services/serverUrl';
+// the alert libary
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Community = ({ isSection }) => {
@@ -30,12 +33,15 @@ const Community = ({ isSection }) => {
     const [communityDetails, setCommunityDetails] = useState({})
     const { id } = useParams()
     const currentuser = sessionStorage.getItem('user')
-    // handle namvigation 
+    const [editor, setEditor] = useState(false)
+    const [isjoin, setIsjoin] = useState(false)
+    // handle navigation 
     const handleNavigation = (navigateto) => {
         const trimednavigate = navigateto.split('/')[0]
         isSection(trimednavigate)
         navigate(`/${navigateto}`)
     }
+
     // set the member 
     useEffect(() => {
         const setmembers = () => {
@@ -44,51 +50,187 @@ const Community = ({ isSection }) => {
         setmembers()
     }, [communityDetails])
 
-    
-    // console.log(members);
+
     // get the community details
+    const getCommunitydetails = async () => {
+        try {
+            const currentuser = JSON.parse(sessionStorage.getItem("user")) //fetch the currrent user from the session storage
+            // Function to extract a specific cookie value
+            const getCookie = (cookieName) => {
+                const cookies = document.cookie.split('; ');
+                const cookie = cookies.find(row => row.startsWith(`${cookieName}=`));
+                return cookie ? cookie.split('=')[1] : null;
+            };
+            // Fetch the user token from cookies
+            const userToken = getCookie('userToken');
+
+            // check if the user and the token is present
+            if (currentuser.userid && userToken) {
+                // let make the header file for the reqbody
+                const reqheader = {
+                    "Authorization": `Bearer ${userToken}`,
+                }
+                // let provide the community id and reqheader for the community details api 
+                const result = await getcommunityDetailsAPI(id, reqheader)
+                // console.log(result);
+                // Set the data if the response was 200
+                if (result.status >= 200 && result.status <= 299) {
+                    setCommunityDetails(result.data.community)
+                    console.log(currentuser.userid);
+                    const ismoderator = result.data.community.creator.userid === currentuser.userid
+                    if (ismoderator) {
+                        setEditor(true)
+                    } else {
+                        setEditor(false)
+                    }
+                    const isjoined = result.data.community.members.some(member => member.userid === currentuser.userid)
+                    if (isjoined) {
+                        setIsjoin(true)
+                    }
+                }
+
+            } else {
+                console.log(`Either currentuser or the usertoken is not founded`);
+
+            }
+        } catch (err) {
+            console.error(`Error in fetching the comunity details`);
+
+        }
+    }
     useEffect(() => {
         // console.log(id);
-        const getCommunitydetails = async () => {
-            try {
-                const currentuser = JSON.parse(sessionStorage.getItem("user")) //fetch the currrent user from the session storage
-                // Function to extract a specific cookie value
-                const getCookie = (cookieName) => {
-                    const cookies = document.cookie.split('; ');
-                    const cookie = cookies.find(row => row.startsWith(`${cookieName}=`));
-                    return cookie ? cookie.split('=')[1] : null;
-                };
-                // Fetch the user token from cookies
-                const userToken = getCookie('userToken');
+        getCommunitydetails() // lets call the function to get details
+        console.log(communityDetails);
+    }, [id])
 
-                // check if the user and the token is present
+    // to set the user join handle function 
+    const handleUserJoin = async () => {
+        try {
+            // let check if the user is the moderator if the community and let a message be displayed of you cannot use the join function 
+            if (editor) {
+                return toast.error('You cannot use this functionality as you are the moderator', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                })
+            }
+            // if the user is not the moderator then use the join function 
+            const currentuser = JSON.parse(sessionStorage.getItem("user")) //fetch the currrent user from the session storage
+            // Function to extract a specific cookie value
+            const getCookie = (cookieName) => {
+                const cookies = document.cookie.split('; ');
+                const cookie = cookies.find(row => row.startsWith(`${cookieName}=`));
+                return cookie ? cookie.split('=')[1] : null;
+            };
+            // Fetch the user token from cookies
+            const userToken = getCookie('userToken');
+            if (isjoin) {
+                // let define function to remove from the community if the user id alreay join in 
                 if (currentuser.userid && userToken) {
                     // let make the header file for the reqbody
                     const reqheader = {
                         "Authorization": `Bearer ${userToken}`,
                     }
-                    // let provide the community id and reqheader for the community details api 
-                    const result = await getcommunityDetailsAPI(id, reqheader)
-                    // console.log(result);
-                    // Set the data if the response was 200
-                    if (result.status >= 200 && result.status <= 299) {
-                        setCommunityDetails(result.data.community)
+                    // let set the rebody of the request
+                    const rebody = {
+                        userid: currentuser.userid
                     }
-
-                } else {
-                    console.log(`Either currentuser or the usertoken is not founded`);
-
+                    // let provide the community id and reqheader for the leaving the community
+                    const result = await userleavecommunityAPI(id, rebody, reqheader)
+                    console.log(result);
+                    if (result.status >= 200 && result.status <= 299) {
+                        setIsjoin(!isjoin)
+                        // for success in leaving  the community
+                        toast.success(result.data.message, {
+                            position: "top-right",
+                            autoClose: 2000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            transition: Bounce,
+                        })
+                    } else {
+                        // for warn of user is already leaved the community
+                        toast.warn(result.response.data.message, {
+                            position: "top-right",
+                            autoClose: 2000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            transition: Bounce,
+                        })
+                    }
                 }
-            } catch (err) {
-                console.error(`Error in fetching the comunity details`);
-
+            } else {
+                // let define function to join in community  if the user id not presnt in the database
+                if (currentuser.userid && userToken) {
+                    // let make the header file for the reqbody
+                    const reqheader = {
+                        "Authorization": `Bearer ${userToken}`,
+                    }
+                    // let set the rebody of the request
+                    const rebody = {
+                        userid: currentuser.userid
+                    }
+                    // let provide the community id and reqheader for the joining the community
+                    const result = await userjoincommunityAPI(id, rebody, reqheader)
+                    console.log(result);
+                    if (result.status >= 200 && result.status <= 299) {
+                        setIsjoin(!isjoin)
+                        // for success joining the community
+                        toast.success(result.data.message, {
+                            position: "top-right",
+                            autoClose: 2000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            transition: Bounce,
+                        })
+                    } else {
+                        // for warn of user is already joined the community
+                        toast.warn(result.response.data.message, {
+                            position: "top-right",
+                            autoClose: 2000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            transition: Bounce,
+                        })
+                    }
+                }
             }
+
+            // fetch the community details after the function ends
+            getCommunitydetails()
+        } catch (error) {
+            console.error(`Error in handling the user join in community`);
         }
-        getCommunitydetails() // lets call the function to get details
-        console.log(communityDetails);
-    }, [id])
+        setIsjoin(!isjoin)
+    }
+
+
     return (
         <div className='w-full h-full flex flex-col gap-3 md:px-[2rem] lx:px-[8rem] py-4 overflow-x-hidden overflow-y-scroll'>
+            <ToastContainer />
             {/* header section */}
             <div className='w-full'>
                 <div className={`w-full h-[10rem] rounded-md relative bg-cover bg-center bg-no-repeat`} style={{ backgroundImage: `url(${serverUrl}/${(communityDetails.communityBanner || "uploads/communities/banners/lockscren.jpg").replace(/\\/g, "/")})` }}>
@@ -100,8 +242,8 @@ const Community = ({ isSection }) => {
                 {/* community menu section */}
                 <div className='w-full h-[3rem] px-5 flex items-center justify-end '>
                     <div className='hidden lg:flex items-center justify-end gap-4'>
-                        <button className='btn4'><MdAdd className='text-[1.2rem]' />Create Post</button>
-                        <button className='btn5'>Join</button>
+                        <button className='btn4' onClick={() => navigate(`/createpost/${id}`)}><MdAdd className='text-[1.2rem]'  />Create Post</button>
+                        <button className={` ${isjoin ? "btn6" : "btn5"}`} onClick={handleUserJoin}>{isjoin ? "Joined" : "Join"}</button>
                         {/* <BsThreeDots className='text-[1.5rem]' /> */}
                     </div>
                     {/*  */}
@@ -109,8 +251,8 @@ const Community = ({ isSection }) => {
                     <div className='relative lg:hidden'>
                         <HiDotsHorizontal className=' text-[1.5rem]' onClick={() => setMenu(!menu)} />
                         <div className={`${menu ? '' : 'hidden'} absolute top-[1.5rem] right-0 w-[10rem] flex flex-col items-start gap-1 bg-white dark:bg-slate-600 rounded-md px-2 py-3`}>
-                            <button className='btn4'><MdAdd className='text-[1.2rem]' />Create Post</button>
-                            <button className='btn5'>Join</button>
+                            <button className='btn4' onClick={() => navigate(`/createpost/${id}`)}><MdAdd className='text-[1.2rem]'  />Create Post</button>
+                            <button className={` ${isjoin ? "btn6" : "btn5"}`} onClick={handleUserJoin}>{isjoin ? "Joined" : "Join"}</button>
                         </div>
                     </div>
                 </div>
@@ -143,6 +285,8 @@ const Community = ({ isSection }) => {
                         </div>
                     </div>
                     {/* option */}
+                    {
+                        editor ?
                             <div className="flex items-center my-[1rem] justify-between px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm">
                                 {/* Profile Section */}
                                 <div className="flex items-center space-x-4">
@@ -171,6 +315,8 @@ const Community = ({ isSection }) => {
                                     Edit Profile
                                 </button>
                             </div>
+                            : ""
+                    }
                     {/* members */}
                     <div className='w-full '>
                         <span className='font-medium'>Members</span>

@@ -3,6 +3,7 @@ const express = require('express')
 
 const userController =require('../Controllers/userControlers') //imported the usercontrollers to the router
 const communityController =require('../Controllers/communityControlers') // imported the communitycontrollers to the router
+const postController =require('../Controllers/postscontroler') // imported the postcontrollers to the router
 const jwtMiddleware =require('../MiddleWares/jwtMiddleware') // imported the jwt middleware to the router
 const upload =require('../MiddleWares/multerMiddleware')
 
@@ -26,12 +27,20 @@ router.delete(`/user/:userid`,jwtMiddleware,userController.deleteuseraccount) //
 
 // communties routes---------------------------------------------------------
 // post routes
-router.post(`/addcommunity`,upload.fields([{ name: "icon", maxCount: 1 },{ name: "banner", maxCount: 1 }]),jwtMiddleware,communityController.createcommunity) // create a new communitydetails
+router.post(`/addcommunity`,jwtMiddleware,upload.fields([{ name: "icon", maxCount: 1 },{ name: "banner", maxCount: 1 }]),communityController.createcommunity) // create a new communitydetails
 router.post(`/joincommunity/:communityid`,jwtMiddleware,communityController.joincommunity) // to set the user to be join in the community as the member
+router.post(`/leavecommunity/:communityid`,jwtMiddleware,communityController.leavecommunity) // to set the user to be leave in the community
 
 // get routes
 router.get(`/communities/:userid`,jwtMiddleware,communityController.getcommunities) // fetch the specific users community details
 router.get(`/community/:communityid`,jwtMiddleware,communityController.getcommunity) // fetch the specific community details
 
+//  posts section routes ---------------------------------------------------------------------
+// post routes
+router.post(`/createpost/:communityid`,jwtMiddleware,upload.fields([{ name: "postMedia", maxCount: 1 }]),postController.createpost) // create a new post in the database
+router.post(`/createcomment`,jwtMiddleware,postController.createcomment) // create a new comment in the database
+// get routes
+router.get(`/getuserposts/:userid`,jwtMiddleware,postController.getuserposts) // fetch the specific users post details
+router.get(`/getpostcomments/:postid`,jwtMiddleware,postController.getpostcomments) // fetch the specific community post details
 // export the router
 module.exports = router

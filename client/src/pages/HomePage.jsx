@@ -37,33 +37,9 @@ import { useLocation, useParams } from 'react-router-dom';
 
 const HomePage = ({ content }) => {
     const location =useLocation()
-    console.log(location);
+    // console.log(location);
     
     const [section, isSection] = useState(content)
-    const [userCreditials,setUserCreditial] = useState({
-        username: "",
-        displayname: "",
-        role: "user",
-        userImg: avatar,
-        imgbanner: imgbanner,
-        about: "",
-        dob:"",
-        post: [
-            { id: 1, title: 'How is life', description: "life is so long as shit", img: imgbanner },
-            { id: 2, title: 'super man is the coolest', description: "nobody is like a superman ", img: null },
-            { id: 3, title: 'Demon slayer new season', description: "one of the amazing season has aired today", img: imgbanner2 }
-        ],
-        home: [
-            { id: 1, username: 'jinu', userImg: avatar2, title: 'Welcome to Connectify!', description: 'Discover exciting content and make connections that matter.', img: null },
-            { id: 2, username: 'kannan', userImg: avatar3, title: 'Latest Updates', description: 'Stay updated with the latest news and posts from the community.', img: imgHome2 }
-        ],
-        explore: [
-            { id: 1, username: 'jinu', userImg: avatar, title: 'Technology', description: 'Explore the latest in tech and innovation.', img: imgExplore1 },
-            { id: 2, username: 'charly', userImg: avatar3, title: 'Lifestyle', description: 'Tips and insights to improve your lifestyle.', img: null },
-            { id: 3, username: 'aju', userImg: avatar4, title: 'Art & Culture', description: 'Dive into the world of art and culture.', img: imgExplore3 }
-        ]
-    })
-    console.log(userCreditials);
     // Update section based on the current URL
     useEffect(() => {
         const path = location.pathname.split('/')[1]; // Extract the first segment of the path
@@ -75,16 +51,16 @@ const HomePage = ({ content }) => {
             {/* navigation bar for mobiles */}
             <MobNav isSection={isSection} />
             {/*default navigation bar  */}
-            <NavigatioinBar isSection={isSection} userCreditials={userCreditials} />
+            <NavigatioinBar isSection={isSection} />
             <div className='w-full h-[87vh] flex'>
                 {/* slidebar */}
                 <Sidebar isSection={isSection} />
                 {/* content */}
-                {section === 'home' ? <Home userCreditials={userCreditials} /> : ''}
-                {section === 'explore' ? <Explore userCreditials={userCreditials} /> : ''}
+                {section === 'home' ? <Home/> : ''}
+                {section === 'explore' ? <Explore/> : ''}
                 {section === 'createpost' ? <CreatePost /> : ''}
                 {section === 'notification' ? <NotificationSection /> : ''}
-                {section === 'viewProfile' ? <Profile userCreditials={userCreditials} isSection={isSection}   /> : ''}
+                {section === 'viewProfile' ? <Profile isSection={isSection}   /> : ''}
                 {section === 'community' ? <Community isSection={isSection} /> : ''}
                 {section === 'message' ? <Message /> : ''}
                 {section === 'setting' ? <Settings /> : ''}

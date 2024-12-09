@@ -50,7 +50,7 @@ const ViewUser = () => {
             <div className=' h-full flex-1 flex flex-col gap-3 px-[2rem] py-[1rem]'>
                 {/* profile photo and userid */}
                 <div className='w-full flex items-center gap-2'>
-                    <img src={`${serverUrl}/${userdata.userImg}`} alt="profile section" className='w-[8rem] h-[8rem] rounded-full' />
+                    <img src={`${serverUrl}/${userdata.userImg}`} alt="profile section" className='w-[8rem] h-[8rem] rounded-full object-cover' />
                     <div className='flex flex-col'>
                         <h3 className='leading-[1.4rem] flex items-center gap-2'>{userdata.displayname || "username"} {userdata.role == "admin" ? <div className='bg-red-500 rounded-full flex items-center justify-center text-white text-sm py-1 px-2'>admin</div> : ""}</h3>
                         <span className={`${userdata.role == "admin" ? "text-red-500" : "text-slate-600"}`}>{userdata.role == "admin" ? "a" : "u"}/{userdata.username}</span>

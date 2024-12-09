@@ -57,3 +57,33 @@ export const getusercommunitiesAPI =async(userid,reqheader)=>{
 export const getcommunityDetailsAPI = async(communityid,reqheader)=>{
     return await commonAPI('get',`${serverUrl}/community/${communityid}`,"",reqheader)
 } 
+
+// to let the user be join the community 
+export const userjoincommunityAPI =async(communityid,reqbody,reqheader)=>{
+    return await commonAPI('post',`${serverUrl}/joincommunity/${communityid}`,reqbody,reqheader)
+}
+
+// to let the user be leave the community 
+export const userleavecommunityAPI =async(communityid,reqbody,reqheader)=>{
+    return await commonAPI('post',`${serverUrl}/leavecommunity/${communityid}`,reqbody,reqheader)
+}
+
+// to let a user create a post in the community 
+export const createpostAPI =async(communityid,reqbody,reqheader)=>{
+    return await commonAPI('post',`${serverUrl}/createpost/${communityid}`,reqbody,reqheader)
+}
+
+//  to get a user created posts details
+export const getuserpostsAPI =async(userid,reqheader)=>{
+    return await commonAPI('get',`${serverUrl}/getuserposts/${userid}`,"",reqheader)
+}
+
+//  to create a comment on a post 
+export const createcommentAPI =async(reqbody,reqheader)=>{
+    return await commonAPI('post',`${serverUrl}/createcomment`,reqbody,reqheader)
+}
+
+//  to fetch the comments of a post 
+export const getpostcommentsAPI =async(postid,reqheader)=>{
+    return await commonAPI('get',`${serverUrl}/getpostcomments/${postid}`,"",reqheader)
+}

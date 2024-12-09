@@ -84,6 +84,9 @@ h4{
 .btn5{
   @apply px-3 py-1 flex items-center border-2 border-solid text-white border-blue-500 bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 rounded-full;
 }
+.btn6{
+  @apply px-3 py-1 flex items-center border-2 border-solid text-blue-600 border-blue-500 bg-white hover:bg-slate-50 focus:bg-slate-100 rounded-full;
+}
 
 .noscroll::-webkit-scrollbar{
   display: none;

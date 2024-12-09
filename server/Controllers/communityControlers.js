@@ -8,7 +8,7 @@ exports.createcommunity = async (req, res) => {
     const { name, community, ismature, title, content, username, userid } = req.body
     const icon = req.files["icon"]
     const banner = req.files["banner"]
-    console.log(name, community, ismature, title, content, username, userid);
+    console.log(name, community, ismature, title, content, username, userid)
     // logic starts
     try {
         // let check if there is every field is present
@@ -187,3 +187,68 @@ exports.joincommunity = async (req, res) => {
         return res.status(500).json({ message: "Error in joining the community" });
     }
 }
+
+// let set a funtion to remove the users from the membersection in the community
+exports.leavecommunity = async (req, res) => {
+    console.log(`inside the leave to the community`);
+    const { communityid } = req.params;
+    const { userid } = req.body;
+
+    try {
+        // Check if both communityid and userid are provided
+        if (!communityid) {
+            return res.status(400).json({ message: "Community ID is required" });
+        }
+        if (!userid) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        // Find community and user
+        const existingcommunity = await communities.findById(communityid);
+        if (!existingcommunity) {
+            return res.status(404).json({ message: "Community not found" });
+        }
+
+        const existinguser = await users.findById(userid);
+        if (!existinguser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        console.log(`Both user and community are present.`);
+
+        // Check if the user is already a member of the community
+        const isMember = existingcommunity.members.some(
+            (member) => member.userid.toString() === userid
+        );
+
+        if (!isMember) {
+            return res.status(400).json({ message: "User is not a member of the community" });
+        }
+
+        // Remove user from community members
+        existingcommunity.members = existingcommunity.members.filter(
+            (member) => member.userid.toString() !== userid
+        );
+        await existingcommunity.save();
+
+        // Remove community from user's following list
+        existinguser.following = existinguser.following.filter(
+            (following) => following.communityid.toString() !== communityid
+        );
+        await existinguser.save();
+
+        // Fetch updated documents
+        const updatedCommunity = await communities.findById(communityid);
+        const updatedUser = await users.findById(userid);
+
+        // Respond with updated data
+        return res.status(200).json({
+            message: "User left the community successfully",
+            community: updatedCommunity,
+            user: updatedUser,
+        });
+    } catch (err) {
+        console.error("Error removing from the community:", err);
+        return res.status(500).json({ message: "Error in removing from the community" });
+    }
+};

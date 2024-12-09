@@ -21,7 +21,7 @@ import ProfileIcon from './ProfileIcon';
 
 
 
-const NavigatioinBar = ({isSection,userCreditials}) => {
+const NavigatioinBar = ({isSection}) => {
     const [isNotification, setIsNotification] = useState(true)
 
 
@@ -55,7 +55,7 @@ const NavigatioinBar = ({isSection,userCreditials}) => {
                     {/* notification  */}
                     <NotificationComponent visible={false} isSection={isSection} />
                     {/* avatar */}                    
-                    <ProfileIcon isSection={isSection} userCreditials={userCreditials}/>
+                    <ProfileIcon isSection={isSection}/>
                     {/* darkmode switcher */}
                     <DarkModeSwitcher visible={false}/>
                 </div>

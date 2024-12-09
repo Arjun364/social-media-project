@@ -90,13 +90,14 @@ const Sidebar = ({ isSection }) => {
                 }
                 // get the api response
                 const result = await getuserfollowinglistAPI(currentuser.userid, reqheader)
-                console.log(result);
+                // console.log(result);
 
                 // check the result status
                 if (result.status == 200) {
                     setFollowingList(result.data.followingList)
                 } else if (result.status == 304) {
                     seterrormsg2(result.data.message)
+                    setFollowingList(result.data.followingList)
                 } else {
                     console.error(`error from the backend`);
                 }

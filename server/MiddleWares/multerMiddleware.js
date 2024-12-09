@@ -10,10 +10,8 @@ const storage = multer.diskStorage({
             folder = "uploads/profiles";
         } else if (file.fieldname === "bannerPic") {
             folder = "uploads/banners";
-        } else if (file.fieldname === "postImage") {
-            folder = "uploads/posts/images";
-        } else if (file.fieldname === "postVideo") {
-            folder = "uploads/posts/videos";
+        } else if (file.fieldname === "postMedia") {
+            folder = "uploads/posts";
         } else if (file.fieldname === "icon") {
             folder = "uploads/communities/images";
         } else if (file.fieldname === "banner") {
@@ -29,14 +27,21 @@ const storage = multer.diskStorage({
             .replace(/\s+/g, "_") // Replace spaces with underscores
             .replace(/[^a-z0-9_.-]/g, ""); // Remove characters other than alphanumerics, underscores, dots, and hyphens
 
-        const uniqueName = `${Date.now()}-${sanitizedOriginalName}`;
+        // Extract the file extension
+        const fileExtension = path.extname(sanitizedOriginalName);
+        const baseName = path.basename(sanitizedOriginalName, fileExtension);
+
+        // Limit the base name to a maximum of 15 characters
+        const shortBaseName = baseName.length > 15 ? baseName.slice(0, 15) : baseName;
+
+        const uniqueName = `${Date.now()}-${shortBaseName}${fileExtension}`;
         cb(null, uniqueName); // Save file with a unique timestamped name
     },
 });
 
 // File filter (optional)
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif","image/webp", "video/mp4"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "video/mp4","images/jpg"];
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
