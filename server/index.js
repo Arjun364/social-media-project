@@ -10,7 +10,13 @@ const cors =require('cors')
 // create a server using express
 const server = express()
 // middlewares for the server
-server.use(cors())
+server.use(cors({
+    origin:[
+        'http://localhost:5173',
+        'https://social-media-project-fz2u.onrender.com'
+    ]
+
+}))
 server.use(express.json())
 server.use(router)
 // create a port for the server to run :4000
