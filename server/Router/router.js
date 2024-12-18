@@ -34,6 +34,9 @@ router.post(`/leavecommunity/:communityid`,jwtMiddleware,communityController.lea
 // get routes
 router.get(`/communities/:userid`,jwtMiddleware,communityController.getcommunities) // fetch the specific users community details
 router.get(`/community/:communityid`,jwtMiddleware,communityController.getcommunity) // fetch the specific community details
+router.get(`/gethomeposts/:userid`,jwtMiddleware,communityController.getusercommunities) // to get every community ids of the current user
+router.get(`/geteverycommunity`,jwtMiddleware,communityController.getEveryCommunities) // to get every community details
+router.get(`/getsearchedcommunities/:communityname`,jwtMiddleware,communityController.getsearchedcommunities) // to get the searched community details
 
 //  posts section routes ---------------------------------------------------------------------
 // post routes
@@ -42,5 +45,6 @@ router.post(`/createcomment`,jwtMiddleware,postController.createcomment) // crea
 // get routes
 router.get(`/getuserposts/:userid`,jwtMiddleware,postController.getuserposts) // fetch the specific users post details
 router.get(`/getpostcomments/:postid`,jwtMiddleware,postController.getpostcomments) // fetch the specific community post details
+router.get(`/getcommunityposts/:communityid`,jwtMiddleware,postController.getcommunityposts) // fetch the specific community post details
 // export the router
 module.exports = router

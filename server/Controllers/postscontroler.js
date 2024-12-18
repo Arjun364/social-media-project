@@ -175,6 +175,40 @@ exports.getpostcomments = async (req, res) => {
         
     } catch (error) {
         console.log(`Error fetching the post comments: ${err}`);
-        return res.status(500).json({ message: "fetching the post comments" });
+        return res.status(500).json({ message: "error fetching the post comments" });
     }
 }
+
+// to fetch the full detail of the posts of a community using the community id
+exports.getcommunityposts = async (req, res) => {
+    console.log(`inside the get community posts route`);
+    const { communityid } = req.params
+    console.log(communityid);
+    // logic starts
+    try {
+        // let check if the community is given 
+        if (!communityid) {
+            return res.status(400).json({ message: "Community ID is required" });
+        }
+        // let check if the community id is present in the database
+        const existingcommunity = await communities.findById(communityid)
+        if (!existingcommunity) {
+            return res.status(401).json({ message: "Community not found" });
+        }
+
+        // let fetch the community posts
+        const communityposts = await posts.find({ 'creator.communityid': communityid });
+        if (communityposts.length == 0) {
+            return res.status(201).json({ message: "No community posts found", posts: communityposts });
+        } else {
+            return res.status(200).json({ message: "Community posts fetched successfully", posts: communityposts });
+        }
+
+    } catch (error) {
+        console.log(`Error fetching community posts: ${error}`);
+        return res.status(500).json({ message: "error fetching community posts" });
+    }
+}
+
+
+

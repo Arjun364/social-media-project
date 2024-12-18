@@ -17,6 +17,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 const Post = ({ postdata }) => {
+    // Safely check if the post exists and has a creator
+    if (!postdata) {
+        return <div>Loading...</div>;
+    }
     const navigate = useNavigate()
     const [isLike, setIsLike] = useState(false)
     const [isBook, setIsBook] = useState(false)
@@ -28,11 +32,6 @@ const Post = ({ postdata }) => {
     const [commentlist, setcommentlist] = useState([])
     const [errMsg, setErrMsg] = useState('')
     const [openComments, setOpenComments] = useState(false);
-
-    console.log(postdata);
-    console.log(commentlist);
-    
-
     // to fetch the comments
     const fetchComments = async () => {
         try {
@@ -53,18 +52,17 @@ const Post = ({ postdata }) => {
                 }
                 // get the api response
                 const result = await getpostcommentsAPI(postdata._id, reqheader)
-                console.log(result);
                 // check the result status
                 if (result.status == 200) {
                     setcommentlist(result.data.comments)
-                    console.log(`fetches the comments successfuly`);
+                    // console.log(`fetches the comments successfuly`);
                 } else if (result.status == 201) {
-                    console.log(`No comments found`);
+                    // console.log(`No comments found`);
                     setErrMsg(result.data.message)
                 } else if (result.status == 401) {
-                    console.log(`post is not found`);
+                    // console.log(`post is not found`);
                 } else {
-                    console.log(`Error fetching comments`);
+                    // console.log(`Error fetching comments`);
                 }
             }
 
@@ -104,7 +102,6 @@ const Post = ({ postdata }) => {
                 }
                 // get the api response
                 const result = await createcommentAPI(reqbody, reqheader)
-                console.log(result);
                 // check the result status
                 if (result.status == 200) {
                     setComment({ comment: '', userid: '', postid: '' })
@@ -115,7 +112,7 @@ const Post = ({ postdata }) => {
                         closeOnClick: true,
                         pauseOnHover: true,
                         draggable: true,
-                        progress: undefined,
+                        progress: true,
                         theme: "light",
                         transition: Bounce,
                     })
@@ -158,7 +155,6 @@ const Post = ({ postdata }) => {
         <div>
             {/* the post  */}
             <div className="rounded-md shadow-md sm:w-96 dark:bg-slate-900 dark:text-white">
-                <ToastContainer />
                 <div className="flex items-center justify-between p-3">
                     <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate(`/community/${postdata.creator?.communityid}`)}>
                         <img src={`${serverUrl}/${postdata.creator?.communityImg}`} alt="post community icon " className="object-cover object-center w-8 h-8 rounded-full shadow-sm dark:bg-gray-500 dark:border-gray-300" />

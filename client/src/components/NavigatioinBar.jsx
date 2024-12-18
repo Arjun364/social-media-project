@@ -7,7 +7,7 @@ import { Flowbite } from "flowbite-react";
 import { color, motion } from "framer-motion"
 // images
 // avatar images
-
+import appicon from '../assets/icons.png'
 // icons section 
 import { IoChatbubbleEllipsesOutline, IoNotificationsOutline} from "react-icons/io5";
 import { AiOutlineHome } from "react-icons/ai";
@@ -35,7 +35,7 @@ const NavigatioinBar = ({isSection}) => {
     return (
         <Flowbite >
             <div className='absolute bottom-[.5rem] z-50 md:relative md:top-0 bg-slate-200 dark:bg-gray-800 md:bg-transparent md:w-full px-[2rem] rounded-full md:rounded-none md:px-[2.5rem] py-2 md:py-4 md:gap-3 flex items-center justify-center md:justify-between border-b-2 border-solid'>
-                <span className='hidden md:block'>connectify</span>
+                <span className='hidden md:flex items-center gap-1 text-[1.2rem] font-mono font-bold' ><img src={appicon} className='w-[2rem]' alt="connectify" /> connectify</span>
                 {/* search section */}
                 <SearchComponent visible={false} />
                 {/* menu section  */}

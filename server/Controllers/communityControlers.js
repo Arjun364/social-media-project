@@ -1,6 +1,9 @@
 // logic for the communities
-const communities = require('../Models/communitySchema') // import the model
 const users = require('../Models/userSchema') // import the model
+const posts = require('../Models/postSchema'); // import the model
+const communities = require('../Models/communitySchema');
+
+
 
 // to create a community
 exports.createcommunity = async (req, res) => {
@@ -252,3 +255,119 @@ exports.leavecommunity = async (req, res) => {
         return res.status(500).json({ message: "Error in removing from the community" });
     }
 };
+
+// to get every community posts of the current user present
+exports.getusercommunities = async (req, res) => {
+    console.log(`inside the get user communities route`);
+    const { userid } = req.params
+    console.log(userid);
+    // let start the logic
+    try {
+        // let check if the user id is present or not
+        if (!userid) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+        // let check if the user id is present in the database
+        const existinguser = await users.findById(userid)
+        if (!existinguser) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        // let fetch the user communities ids
+        const userCommunities = await communities.find({ 'members.userid': userid }, { _id: 1 }); // only the required data is fetched to the communities
+        // let check the length of the communities
+        if (userCommunities.length === 0) {
+            return res.status(200).json({
+                message: "No user communities found",
+                communities: [],
+                posts: []
+            });
+        }
+
+        // Extract community IDs
+        const communityIds = userCommunities.map((community) => community._id.toString());
+
+        // Fetch posts related to these communities
+        const communityPosts = await posts.find({ "creator.communityid": { $in: communityIds } });
+
+        // Response
+        return res.status(200).json({
+            message: "User homepage posts fetched successfully",
+            posts: communityPosts,
+        });
+
+    } catch (err) {
+        console.error("Error in fetching user communities:", err);
+        return res.status(500).json({ message: "Error in fetching user communities" });
+    }
+
+}
+
+// to every communtiy details in the user explore page 
+exports.getEveryCommunities = async (req, res) => {
+    console.log(`inside the get every communities route`);
+    try {
+        // Fetch required fields from all communities
+        const allCommunities = await communities.find({}, { 
+            _id: 1, 
+            name: 1, 
+            communitiyIcon: 1,
+            communityBanner: 1, 
+            creator: 1,
+            description: 1
+        });
+
+        // Response based on the result
+        if (allCommunities.length === 0) {
+            return res.status(200).json({ 
+                message: "No communities found", 
+                communities: [] 
+            });
+        }
+        
+        return res.status(200).json({ 
+            message: "Communities fetched successfully", 
+            communities: allCommunities 
+        });
+    } catch (err) {
+        console.error("Error in fetching every community details:", err.stack);
+        return res.status(500).json({ 
+            message: "Error in fetching every community details" 
+        });
+    }
+};
+
+// to get the searched community details
+exports.getsearchedcommunities = async (req, res) => {
+    console.log(`inside the get searched communities route`);
+    const { communityname } = req.params
+    console.log(communityname);
+    try {
+        // let check if the community name is present or not
+        if (!communityname) {
+            return res.status(400).json({ message: "Community name is required" });
+        }
+        // let fetch the community details
+        const searchedcommunities = await communities.find({ name: { $regex: communityname, $options: "i" } }, { _id: 1, name: 1, communitiyIcon: 1});
+        console.log(searchedcommunities);
+
+        // Response based on the result
+        if (searchedcommunities.length === 0) {
+            return res.status(200).json({ 
+                message: "No communities found", 
+                communities: [] 
+            });
+        }
+        
+        return res.status(200).json({ 
+            message: "Communities fetched successfully", 
+            communities: searchedcommunities 
+        });
+        
+    } catch (err) {
+        console.error("Error in fetching every community details:", err.stack);
+        return res.status(500).json({ 
+            message: "Error in fetching every community details" 
+        });
+    }
+}

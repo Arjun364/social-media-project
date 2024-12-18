@@ -87,3 +87,23 @@ export const createcommentAPI =async(reqbody,reqheader)=>{
 export const getpostcommentsAPI =async(postid,reqheader)=>{
     return await commonAPI('get',`${serverUrl}/getpostcomments/${postid}`,"",reqheader)
 }
+
+//  to fetch the community posts 
+export const getcommunitypostsAPI =async(communityid,reqheader)=>{
+    return await commonAPI('get',`${serverUrl}/getcommunityposts/${communityid}`,"",reqheader)
+}
+
+//  to fetch the home post 
+export const gethomepostsAPI =async(userid,reqheader)=>{
+    return await commonAPI('get',`${serverUrl}/gethomeposts/${userid}`,"",reqheader)
+}
+
+// to fetch the every community in the playform
+export const getEveryCommunitiesAPI =async(reqheader)=>{
+    return await commonAPI('get',`${serverUrl}/geteverycommunity`,"",reqheader)
+}
+
+// to fetch the searched community details
+export const getsearchedcommunitiesAPI =async(communityname,reqheader)=>{
+    return await commonAPI('get',`${serverUrl}/getsearchedcommunities/${communityname}`,"",reqheader)
+}

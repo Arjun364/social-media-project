@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from 'react'
-// flowbite
-import { Avatar, Dropdown } from "flowbite-react";
-// images
-import bannerImg from '../../assets/lockscren.jpg'
 // icons
 import avatar4 from '../../assets/avatar4.jpg'
 import avatar from '../../assets/avatar2.jpg'
@@ -14,14 +10,16 @@ import { HiDotsHorizontal } from "react-icons/hi";
 // components
 import Post from './Post';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getcommunityDetailsAPI, userjoincommunityAPI, userleavecommunityAPI } from '../../services/allAPIs';
+import { getcommunityDetailsAPI, getcommunitypostsAPI, userjoincommunityAPI, userleavecommunityAPI } from '../../services/allAPIs';
 import { serverUrl } from '../../services/serverUrl';
 // the alert libary
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
+
 const Community = ({ isSection }) => {
+    const { id } = useParams()
     const navigate = useNavigate()
     const [menu, setMenu] = useState(false)
     const [members, setMembers] = useState([
@@ -31,10 +29,10 @@ const Community = ({ isSection }) => {
         { username: "kannan", img: avatar }
     ])
     const [communityDetails, setCommunityDetails] = useState({})
-    const { id } = useParams()
-    const currentuser = sessionStorage.getItem('user')
     const [editor, setEditor] = useState(false)
     const [isjoin, setIsjoin] = useState(false)
+    const [posts, setPosts] = useState([])
+    const [errMsg, setErrmsg] = useState('')
     // handle navigation 
     const handleNavigation = (navigateto) => {
         const trimednavigate = navigateto.split('/')[0]
@@ -102,6 +100,7 @@ const Community = ({ isSection }) => {
         // console.log(id);
         getCommunitydetails() // lets call the function to get details
         console.log(communityDetails);
+        getcommunityposts()
     }, [id])
 
     // to set the user join handle function 
@@ -227,7 +226,46 @@ const Community = ({ isSection }) => {
         setIsjoin(!isjoin)
     }
 
+    // to fetch the community posts 
+    const getcommunityposts = async () => {
+        try {
+            // if the user is not the moderator then use the join function 
+            const currentuser = JSON.parse(sessionStorage.getItem("user")) //fetch the currrent user from the session storage
+            // Function to extract a specific cookie value
+            const getCookie = (cookieName) => {
+                const cookies = document.cookie.split('; ');
+                const cookie = cookies.find(row => row.startsWith(`${cookieName}=`));
+                return cookie ? cookie.split('=')[1] : null;
+            };
+            // Fetch the user token from cookies
+            const userToken = getCookie('userToken');
+            if (currentuser.userid && userToken) {
+                // let create the reheader
+                const reqheader = {
+                    "Authorization": `Bearer ${userToken}`,
+                }
 
+                // let call the result form the api 
+                const result = await getcommunitypostsAPI(id, reqheader)
+                console.log(result);
+                if (result.status == 200) {
+                    setPosts(result.data.posts)
+                } else if (result.status == 201) {
+                    setPosts([])
+                    setErrmsg("There isnt any post pressnt in here. 😢")
+                } else {
+                    console.log(result.response.data.message);
+                }
+            }
+
+        } catch (error) {
+            console.error(`Error in handling the user join in community`);
+        }
+    }
+
+    useEffect(() => {
+        getcommunityposts()
+    }, [])
     return (
         <div className='w-full h-full flex flex-col gap-3 md:px-[2rem] lx:px-[8rem] py-4 overflow-x-hidden overflow-y-scroll'>
             <ToastContainer />
@@ -242,7 +280,7 @@ const Community = ({ isSection }) => {
                 {/* community menu section */}
                 <div className='w-full h-[3rem] px-5 flex items-center justify-end '>
                     <div className='hidden lg:flex items-center justify-end gap-4'>
-                        <button className='btn4' onClick={() => navigate(`/createpost/${id}`)}><MdAdd className='text-[1.2rem]'  />Create Post</button>
+                        <button className='btn4' onClick={() => navigate(`/createpost/${id}`)}><MdAdd className='text-[1.2rem]' />Create Post</button>
                         <button className={` ${isjoin ? "btn6" : "btn5"}`} onClick={handleUserJoin}>{isjoin ? "Joined" : "Join"}</button>
                         {/* <BsThreeDots className='text-[1.5rem]' /> */}
                     </div>
@@ -251,7 +289,7 @@ const Community = ({ isSection }) => {
                     <div className='relative lg:hidden'>
                         <HiDotsHorizontal className=' text-[1.5rem]' onClick={() => setMenu(!menu)} />
                         <div className={`${menu ? '' : 'hidden'} absolute top-[1.5rem] right-0 w-[10rem] flex flex-col items-start gap-1 bg-white dark:bg-slate-600 rounded-md px-2 py-3`}>
-                            <button className='btn4' onClick={() => navigate(`/createpost/${id}`)}><MdAdd className='text-[1.2rem]'  />Create Post</button>
+                            <button className='btn4' onClick={() => navigate(`/createpost/${id}`)}><MdAdd className='text-[1.2rem]' />Create Post</button>
                             <button className={` ${isjoin ? "btn6" : "btn5"}`} onClick={handleUserJoin}>{isjoin ? "Joined" : "Join"}</button>
                         </div>
                     </div>
@@ -261,7 +299,9 @@ const Community = ({ isSection }) => {
             <div className='w-full px-[2rem] flex gap-3'>
                 {/* posts */}
                 <div className='flex-1 flex flex-col'>
-                    {/* <Post/> */}
+                    {
+                        posts?.map((post) => <Post postdata={post} />)
+                    }
                 </div>
                 {/* community description */}
                 <div className='hidden lg:flex flex-col w-[20rem] h-[40rem] bg-slate-300 dark:bg-slate-500 rounded-md px-[1rem] py-2'>
