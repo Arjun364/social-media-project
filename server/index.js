@@ -1,5 +1,6 @@
 // 1 load the .env file : it is given first to load it first since the authincation has to be done btw the server and the clinet berfore any thing
 require('dotenv').config();
+const path = require('path');
 // import the express framwork
 const express = require('express')
 // import the router
