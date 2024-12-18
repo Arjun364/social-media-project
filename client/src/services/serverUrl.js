@@ -1,1 +1,1 @@
-export const serverUrl ="https://social-media-project-fz2u.onrender.com"
+export const serverUrl ="https://social-media-project-production.up.railway.app"
