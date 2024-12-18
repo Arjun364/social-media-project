@@ -151,6 +151,8 @@ const Post = ({ postdata }) => {
         }
 
     }
+    console.log(`${serverUrl}/${postdata.creator?.communityImg}`);
+    
     return (
         <div>
             {/* the post  */}
