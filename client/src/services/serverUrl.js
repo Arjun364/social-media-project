@@ -1,1 +1,1 @@
-export const serverUrl ="https://social-media-project-production.up.railway.app"
+export const serverUrl ="http://localhost:4000"
